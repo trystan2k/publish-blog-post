@@ -7,7 +7,7 @@ import {
   authorizeUser,
   getCommitMessage,
   getGitInstance,
-  getFilesSinceLastCommit,
+  getFilesToBePublished,
   gitCheckout,
   gitCommitPush,
   gitSetConfig,
@@ -147,7 +147,7 @@ describe('Git Utilities', () => {
     });
   });
 
-  describe('getFilesSinceLastCommit', () => {
+  describe('getFilesToBePublished', () => {
     test('should return modified files', async () => {
       const mockOutput = 'M\tfile1.txt\nA\tfile2.txt\nD\tfile3.txt\nR077\tfile4.txt\nA\tfile5.txt\nR093\tfile6.txt';
       vi.mocked(exec).mockImplementation((cmd, args, options) => {
@@ -159,7 +159,7 @@ describe('Git Utilities', () => {
 
       context.payload = { before: 'before-sha', after: 'after-sha' };
 
-      const modifiedFiles = await getFilesSinceLastCommit();
+      const modifiedFiles = await getFilesToBePublished();
       expect(exec).toHaveBeenCalledWith(
         'git',
         ['diff', '--name-status', 'before-sha', 'after-sha'],

@@ -4,7 +4,7 @@ import { describe, expect, vi, test, beforeEach, beforeAll, afterAll, Mock } fro
 import matter from 'gray-matter';
 
 import main from '@/pbp/index';
-import { authorizeUser, getBuildInput, getFilesSinceLastCommit, setBuildFailed } from '@/pbp/git';
+import { authorizeUser, getBuildInput, getFilesToBePublished, setBuildFailed } from '@/pbp/git';
 import { ACTION_INPUT_KEY_INCLUDE_FOLDERS } from '@/pbp/utils/const';
 
 vi.mock('@/pbp/git');
@@ -57,7 +57,7 @@ describe('main function', () => {
     vi.mocked(authorizeUser).mockResolvedValue(true);
     mockIncludeFolders = vi.fn().mockReturnValue('folder_without_post_files');
 
-    vi.mocked(getFilesSinceLastCommit).mockResolvedValue([
+    vi.mocked(getFilesToBePublished).mockResolvedValue([
       {
         fileStatus: 'A',
         fileName: 'test/examples/markdown-example-1.md',
@@ -85,7 +85,7 @@ describe('main function', () => {
     vi.mocked(authorizeUser).mockResolvedValue(true);
     mockIncludeFolders = vi.fn().mockReturnValue('examples');
 
-    vi.mocked(getFilesSinceLastCommit).mockResolvedValue([
+    vi.mocked(getFilesToBePublished).mockResolvedValue([
       {
         fileStatus: 'D',
         fileName: 'test/examples/markdown-example-1.md',
@@ -105,7 +105,7 @@ describe('main function', () => {
     vi.mocked(authorizeUser).mockResolvedValue(true);
     mockIncludeFolders = vi.fn().mockReturnValue('examples');
 
-    vi.mocked(getFilesSinceLastCommit).mockResolvedValue([
+    vi.mocked(getFilesToBePublished).mockResolvedValue([
       {
         fileStatus: 'A',
         fileName: 'test/examples/markdown-example-1.md',
@@ -130,7 +130,7 @@ describe('main function', () => {
     vi.mocked(authorizeUser).mockResolvedValue(true);
     mockIncludeFolders = vi.fn().mockReturnValue('examples');
 
-    vi.mocked(getFilesSinceLastCommit).mockResolvedValue([
+    vi.mocked(getFilesToBePublished).mockResolvedValue([
       {
         fileStatus: 'M',
         fileName: 'test/examples/markdown-example-2.mdx',
@@ -151,7 +151,7 @@ describe('main function', () => {
     vi.mocked(authorizeUser).mockResolvedValue(true);
     mockIncludeFolders = vi.fn().mockReturnValue('examples');
 
-    vi.mocked(getFilesSinceLastCommit).mockResolvedValue([
+    vi.mocked(getFilesToBePublished).mockResolvedValue([
       {
         fileStatus: 'A',
         fileName: 'test/examples/markdown-example-3.md',
@@ -167,7 +167,7 @@ describe('main function', () => {
     vi.mocked(authorizeUser).mockResolvedValue(true);
     mockIncludeFolders = vi.fn().mockReturnValue('');
 
-    vi.mocked(getFilesSinceLastCommit).mockResolvedValue([
+    vi.mocked(getFilesToBePublished).mockResolvedValue([
       {
         fileStatus: 'M',
         fileName: 'test/examples/markdown-example-1.md',
@@ -191,7 +191,7 @@ describe('main function', () => {
     vi.mocked(authorizeUser).mockResolvedValue(true);
     mockIncludeFolders = vi.fn().mockReturnValue('examples\npost-samples');
 
-    vi.mocked(getFilesSinceLastCommit).mockResolvedValue([
+    vi.mocked(getFilesToBePublished).mockResolvedValue([
       {
         fileStatus: 'M',
         fileName: 'test/examples/markdown-example-1.md',

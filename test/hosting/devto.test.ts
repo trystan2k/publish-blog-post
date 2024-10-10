@@ -31,7 +31,7 @@ describe('DevToSDK', () => {
       }),
     });
 
-    sdk = new DevToSDK(apiKey);
+    sdk = new DevToSDK();
     const response = await sdk.createPost(post);
 
     expect(response).toEqual(mockPostResponse);
@@ -59,7 +59,7 @@ describe('DevToSDK', () => {
       }),
     });
 
-    sdk = new DevToSDK(apiKey);
+    sdk = new DevToSDK();
     const response = await sdk.updatePost(postId, post);
 
     expect(response).toEqual(mockPostResponse);

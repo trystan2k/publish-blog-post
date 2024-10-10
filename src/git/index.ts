@@ -1,6 +1,13 @@
-import { setFailed, getInput, info } from '@actions/core';
+import { setFailed, getInput, info, debug, isDebug } from '@actions/core';
 import { exec } from '@actions/exec';
 import { context, getOctokit } from '@actions/github';
+
+import {
+  supportedFileExtensions,
+  ACTION_INPUT_KEY_INCLUDE_FOLDERS,
+  GIT_ADD_FILE_STATUS,
+  GIT_MODIFIED_FILE_STATUS,
+} from '@/pbp/utils/const';
 
 export const getGitInstance = () => {
   const GITHUB_TOKEN = getInput('token');
@@ -18,6 +25,15 @@ export const getBuildInput = getInput;
 export const buildContext = context;
 
 export const logBuildInfo = info;
+
+export const logBuildDebug = (message: string) => {
+  if (isDebug()) {
+    debug(message);
+  }
+};
+
+// eslint-disable-next-line no-console
+export const logBuildError = console.error;
 
 export const gitSetConfig = async () => {
   logBuildInfo('Setting git config...');
@@ -40,9 +56,21 @@ type GitCommitPush = {
 export const gitCommitPush = async ({ branch, filePath, message }: GitCommitPush) => {
   logBuildInfo('Committing and pushing...');
 
+  await gitCommit({ filePath, message });
+  await gitPush({ branch });
+};
+
+export const gitCommit = async ({ filePath, message }: Pick<GitCommitPush, 'message' | 'filePath'>) => {
+  logBuildInfo('Committing...');
+
   await exec('git', ['add', filePath]);
 
   await exec('git', ['commit', '-m', message]);
+};
+
+export const gitPush = async ({ branch }: Pick<GitCommitPush, 'branch'>) => {
+  logBuildInfo('Pushing...');
+
   await exec('git', ['push', 'origin', branch]);
 };
 
@@ -98,9 +126,9 @@ const parseGitStatusOutput = (output: string): { fileStatus: string; fileName: s
   });
 };
 
-export const getFilesSinceLastCommit = async () => {
+const getFilesBetweenCommits = async (fromCommitHash: string, toCommitHash: string) => {
   let files = '';
-  await exec('git', ['diff', '--name-status', context.payload.before, context.payload.after], {
+  await exec('git', ['diff', '--name-status', fromCommitHash, toCommitHash], {
     listeners: {
       stdout: (data: Buffer) => {
         files += data.toString();
@@ -109,4 +137,32 @@ export const getFilesSinceLastCommit = async () => {
   });
 
   return parseGitStatusOutput(files);
+};
+
+const filterFilesByGitStatus = (files: { fileStatus: string; fileName: string }[], status: string[]) => {
+  // Filter to get only the files modified and added
+  return files
+    .filter(file => status.includes(file.fileStatus))
+    .filter(file => {
+      return supportedFileExtensions.some(ext => file.fileName.endsWith(ext));
+    });
+};
+
+const filterFilesByIncludeFolders = (files: { fileStatus: string; fileName: string }[]) => {
+  // Check for include folders
+  const includeFolders = getBuildInput(ACTION_INPUT_KEY_INCLUDE_FOLDERS);
+  if (!includeFolders || includeFolders.trim().length === 0) {
+    return files;
+  }
+
+  return files.filter(data => includeFolders.split(/\r|\n/).some(folder => data.fileName.includes(folder)));
+};
+
+export const getFilesToBePublished = async () => {
+  const filesSinceLastCommit = await getFilesBetweenCommits(context.payload.before, context.payload.after);
+  const modifiedOrAddedFiles = filterFilesByGitStatus(filesSinceLastCommit, [
+    GIT_ADD_FILE_STATUS,
+    GIT_MODIFIED_FILE_STATUS,
+  ]);
+  return filterFilesByIncludeFolders(modifiedOrAddedFiles);
 };

@@ -11,10 +11,14 @@ inputs:
   devToApiKey:
     description: API Key to use to publish blog post to Dev.to website
     required: false    
+  publishTo:
+    description: Websites to publish blog post
+    required: true
+    default: 'dev.to,medium.com'
   includeFolders:
     description: Folders to look for post files to publish/update. Multiple folders can be speficied, one folder per line
     required: false
-  publishCommitMessage:
+  commitMessage:
     description: 'Commit message template to be used when a published file is commited with update data. %file is replaced with the file name and %lang with language'
     required: false
     default: 'publish/update %file with updated data'

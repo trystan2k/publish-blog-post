@@ -1,7 +1,39 @@
-NODEJS Streams
-<https://medium.com/codex/achieve-the-best-performance-search-a-string-in-file-using-nodejs-6a0f2a3b6cfa>
+Review ESLINT eslint-plugin-import
+<https://github.com/import-js/eslint-plugin-import>
+Add:
 
-<https://github.com/sankalpkataria/search-in-file/blob/master/src/getFilesFromDir.ts>
+- <https://www.npmjs.com/package/@eslint/markdown>
+- <https://www.npmjs.com/package/@eslint/json>
+
+Check if possible to not run GitHub Actions when autor is email is 'dependabot[bot]'
+
+```yaml
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    if: "!contains(github.event.head_commit.author.email, 'dependabot[bot]')"
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+```
+
+- Create a logging system
 
 <https://developers.forem.com/api/v0#tag/articles/operation/updateArticle>
 

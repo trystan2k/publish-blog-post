@@ -1,50 +1,58 @@
-import ky, { type KyInstance } from 'ky';
+import ky, { HTTPError, type KyInstance } from 'ky';
 
-type Article = {
-  title: string;
-  body_markdown: string;
-  published?: boolean;
-  series?: string;
-  tags?: string[];
-  canonical_url?: string;
-  cover_image?: string;
-  date?: string;
-};
+import { ArticleResponse, CreatePost, HostingAPIModel, UpdatePost } from './types';
 
-type CreatePost = {
-  article: Article;
-};
+import { getBuildInput } from '@/pbp/git';
 
-type UpdatePost = {
-  article: Article;
-};
-
-export type ArticleResponse = {
-  id: number;
-  slug: string;
-  path: string;
-  url: string;
-  created_at: string;
-  published_at: string;
-};
-
-export class DevToSDK {
+export class DevToSDK implements HostingAPIModel {
   private readonly client: KyInstance;
+  private readonly prefixUrl = 'https://dev.to/api';
+  private readonly defaultHeaders = {
+    Accept: 'application/vnd.forem.api-v1+json',
+  };
 
-  constructor(private readonly apiKey: string) {
+  constructor() {
+    const devToApiKey = getBuildInput('devToApiKey');
+    if (!devToApiKey) {
+      throw new Error('Dev.to API key is not set.');
+    }
+
     this.client = ky.create({
-      prefixUrl: 'https://dev.to/api',
+      prefixUrl: this.prefixUrl,
       headers: {
-        'api-key': this.apiKey,
+        'api-key': devToApiKey,
+        ...this.defaultHeaders,
       },
     });
   }
 
   async createPost(post: CreatePost) {
-    return this.client.post<ArticleResponse>('/articles', { json: post }).json();
+    return this.client
+      .post<ArticleResponse>('articles', { json: post })
+      .json()
+      .catch(async error => {
+        if (error instanceof HTTPError) {
+          throw new Error(
+            `Error publishing post \n Status: ${error.response.status} \n Reason: ${(await error.response.json()).error || error.message}`,
+          );
+        } else {
+          throw new Error((error as Error).message);
+        }
+      });
   }
 
   async updatePost(id: number, post: UpdatePost) {
-    return this.client.put<ArticleResponse>(`/articles/${id}`, { json: post }).json();
+    return this.client
+      .put<ArticleResponse>(`articles/${id}`, { json: post })
+      .json()
+      .catch(async error => {
+        if (error instanceof HTTPError) {
+          throw new Error(
+            `Error updating post \n Status: ${error.response.status} \n Reason: ${(await error.response.json()).error || error.message}`,
+          );
+        } else {
+          throw new Error((error as Error).message);
+        }
+      });
   }
 }
