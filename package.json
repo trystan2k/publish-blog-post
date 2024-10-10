@@ -1,0 +1,83 @@
+{
+  "name": "publish-blog-post",
+  "description": "A GitHub Action to publish markdown as blog post in Dev.to and Medium",
+  "version": "0.0.0",
+  "author": "Thiago Mendonca",
+  "private": true,
+  "type": "module",
+  "homepage": "https://github.com/trystan2k/publish-blog-post#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trystan2k/publish-blog-post"
+  },
+  "bugs": {
+    "url": "https://github.com/trystan2k/publish-blog-post/issues"
+  },
+  "keywords": [
+    "github",
+    "action",
+    "blog",
+    "dev.to",
+    "medium"
+  ],
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "build": "ncc build src/index.ts -o dist",
+    "test": "vitest run --changed origin/main --coverage.all=false",
+    "test:watch": "vitest watch",
+    "test:all": "vitest run",
+    "complete-check": "npm run typecheck && npm run lint && npm run test:all && npm run build",
+    "prepare": "husky || true",
+    "cz": "git-cz",
+    "push": "git push && git push --tags",
+    "release": "commit-and-tag-version",
+    "release:as": "commit-and-tag-version --release-as"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "~1.10.1",
+    "@actions/exec": "~1.1.1",
+    "@actions/github": "~6.0.0",
+    "find": "~0.3.0",
+    "gray-matter": "~4.0.3",
+    "ky": "~1.7.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "~19.5.0",
+    "@commitlint/config-conventional": "~19.5.0",
+    "@commitlint/cz-commitlint": "~19.5.0",
+    "@eslint/compat": "~1.1.1",
+    "@eslint/js": "~9.11.1",
+    "@types/find": "~0.2.4",
+    "@types/node": "~22.7.4",
+    "@vercel/ncc": "~0.38.2",
+    "@vitest/coverage-v8": "~2.1.2",
+    "commit-and-tag-version": "~12.4.4",
+    "commitizen": "~4.3.1",
+    "eslint-config-prettier": "~9.1.0",
+    "eslint-plugin-import": "~2.30.0",
+    "eslint-plugin-prettier": "~5.2.1",
+    "eslint-plugin-unused-imports": "~4.1.4",
+    "globals": "~15.9.0",
+    "husky": "~9.1.6",
+    "lint-staged": "~15.2.10",
+    "prettier": "~3.3.3",
+    "ts-node": "~10.9.2",
+    "typescript": "~5.6.2",
+    "typescript-eslint": "~8.7.0",
+    "vitest": "~2.1.2"
+  }
+}

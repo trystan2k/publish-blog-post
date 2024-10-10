@@ -1,0 +1,25 @@
+name: Test Markdown Reviewer and Translator
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  md-reviewr-translator:
+    runs-on: ubuntu-latest
+    name: A test job to run the Markdown Reviwer and Translator
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test the publish-blog-post action
+        uses: ./ # Uses an action in the root directory
+        id: publish-blog-post
+        with:
+          devToApiKey: ${{ secrets.DEV_TO_API_KEY }}
+          includeFolders: |-
+            examples
+            post-samples
