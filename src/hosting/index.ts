@@ -1,23 +1,26 @@
-import { DevToSDK } from './devto';
+import { createDevToSDK } from './devto';
 import { CreatePost, HostingAPIModel, HostingType, UpdatePost } from './types';
 
-const hostingInitializers: Record<string, () => HostingAPIModel> = {
-  [HostingType.DEV_TO]: () => new DevToSDK(),
+const hostingInitializers: Record<string, (apiKey: string) => HostingAPIModel> = {
+  [HostingType.DEV_TO]: createDevToSDK,
 };
 
 export class HostingAPI {
   private readonly hosting: HostingAPIModel;
-  constructor(private readonly name: string) {
-    this.hosting = this.getHostingInstance();
+  constructor(
+    private readonly name: string,
+    apiKey: string,
+  ) {
+    this.hosting = this.getHostingInstance(apiKey);
   }
 
-  private getHostingInstance() {
+  private getHostingInstance(apiKey: string) {
     const initializer = hostingInitializers[this.name];
     if (!initializer) {
       throw new Error(`Hosting ${this.name} is not supported.`);
     }
 
-    return initializer();
+    return initializer(apiKey);
   }
 
   async createPost(post: CreatePost) {
@@ -29,4 +32,4 @@ export class HostingAPI {
   }
 }
 
-export const createHostingAPI = (name: string) => new HostingAPI(name);
+export const createHostingAPI = (name: string, apiKey: string) => new HostingAPI(name, apiKey);

@@ -44,7 +44,8 @@ export const processPostsData = async (
 
   const publishHostsSDK = new Map<string, HostingAPIModel>();
   publishTo.split(',').forEach(host => {
-    publishHostsSDK.set(host, createHostingAPI(host));
+    const devToApiKey = getBuildInput(`${host}ApiKey`);
+    publishHostsSDK.set(host, createHostingAPI(host, devToApiKey));
   });
 
   const filesUpdated = new Set<string>();

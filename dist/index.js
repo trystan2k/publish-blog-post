@@ -37331,6 +37331,7 @@ const supportedFileExtensions = ['.md', '.mdx'];
 const GIT_ADD_FILE_STATUS = 'A';
 const GIT_MODIFIED_FILE_STATUS = 'M';
 const FILE_ENCODING = 'utf-8';
+const ACTION_INPUT_KEY_TOKEN = 'token';
 const ACTION_INPUT_KEY_INCLUDE_FOLDERS = 'includeFolders';
 const ACTION_INPUT_KEY_COMMIT_MESSAGE_TEMPLATE = 'commitMessage';
 
@@ -37339,13 +37340,6 @@ const ACTION_INPUT_KEY_COMMIT_MESSAGE_TEMPLATE = 'commitMessage';
 
 
 
-const getGitInstance = () => {
-    const GITHUB_TOKEN = (0,core.getInput)('token');
-    if (!GITHUB_TOKEN) {
-        (0,core.setFailed)('Error: GITHUB_TOKEN is a required input.');
-    }
-    return (0,github.getOctokit)(GITHUB_TOKEN);
-};
 const setBuildFailed = core.setFailed;
 const getBuildInput = core.getInput;
 const buildContext = (/* unused pure expression or super */ null && (context));
@@ -37357,6 +37351,13 @@ const logBuildDebug = (message) => {
 };
 // eslint-disable-next-line no-console
 const logBuildError = console.error;
+const getGitInstance = () => {
+    const GITHUB_TOKEN = getBuildInput(ACTION_INPUT_KEY_TOKEN);
+    if (!GITHUB_TOKEN) {
+        (0,core.setFailed)('Error: GITHUB_TOKEN is a required input.');
+    }
+    return (0,github.getOctokit)(GITHUB_TOKEN);
+};
 const gitSetConfig = async () => {
     logBuildInfo('Setting git config...');
     const user = {
@@ -38059,15 +38060,13 @@ const ky = createInstance();
 //# sourceMappingURL=index.js.map
 ;// CONCATENATED MODULE: ./src/hosting/devto.ts
 
-
 class DevToSDK {
     client;
     prefixUrl = 'https://dev.to/api';
     defaultHeaders = {
         Accept: 'application/vnd.forem.api-v1+json',
     };
-    constructor() {
-        const devToApiKey = getBuildInput('devToApiKey');
+    constructor(devToApiKey) {
         if (!devToApiKey) {
             throw new Error('Dev.to API key is not set.');
         }
@@ -38085,7 +38084,7 @@ class DevToSDK {
             .json()
             .catch(async (error) => {
             if (error instanceof HTTPError) {
-                throw new Error(`Error publishing post \n Status: ${error.response.status} \n Reason: ${(await error.response.json()).error || error.message}`);
+                throw new Error(`Error publishing post \n Status: ${error.response.status} \n Reason: ${(await error.response.json()).error}`);
             }
             else {
                 throw new Error(error.message);
@@ -38098,7 +38097,7 @@ class DevToSDK {
             .json()
             .catch(async (error) => {
             if (error instanceof HTTPError) {
-                throw new Error(`Error updating post \n Status: ${error.response.status} \n Reason: ${(await error.response.json()).error || error.message}`);
+                throw new Error(`Error updating post \n Status: ${error.response.status} \n Reason: ${(await error.response.json()).error}`);
             }
             else {
                 throw new Error(error.message);
@@ -38106,32 +38105,34 @@ class DevToSDK {
         });
     }
 }
+const createDevToSDK = (apiKey) => new DevToSDK(apiKey);
 
 ;// CONCATENATED MODULE: ./src/hosting/types.ts
 var HostingType;
 (function (HostingType) {
-    HostingType["DEV_TO"] = "dev.to";
+    HostingType["DEV_TO"] = "devTo";
+    HostingType["MEDIUM"] = "medium";
 })(HostingType || (HostingType = {}));
 
 ;// CONCATENATED MODULE: ./src/hosting/index.ts
 
 
 const hostingInitializers = {
-    [HostingType.DEV_TO]: () => new DevToSDK(),
+    [HostingType.DEV_TO]: createDevToSDK,
 };
 class HostingAPI {
     name;
     hosting;
-    constructor(name) {
+    constructor(name, apiKey) {
         this.name = name;
-        this.hosting = this.getHostingInstance();
+        this.hosting = this.getHostingInstance(apiKey);
     }
-    getHostingInstance() {
+    getHostingInstance(apiKey) {
         const initializer = hostingInitializers[this.name];
         if (!initializer) {
             throw new Error(`Hosting ${this.name} is not supported.`);
         }
-        return initializer();
+        return initializer(apiKey);
     }
     async createPost(post) {
         return this.hosting.createPost(post);
@@ -38140,7 +38141,7 @@ class HostingAPI {
         return this.hosting.updatePost(id, post);
     }
 }
-const createHostingAPI = (name) => new HostingAPI(name);
+const createHostingAPI = (name, apiKey) => new HostingAPI(name, apiKey);
 
 ;// CONCATENATED MODULE: ./src/posts/process.ts
 
@@ -38176,7 +38177,8 @@ const processPostsData = async (filesData) => {
     }
     const publishHostsSDK = new Map();
     publishTo.split(',').forEach(host => {
-        publishHostsSDK.set(host, createHostingAPI(host));
+        const devToApiKey = getBuildInput(`${host}ApiKey`);
+        publishHostsSDK.set(host, createHostingAPI(host, devToApiKey));
     });
     const filesUpdated = new Set();
     const processedData = filesData.map(async (data) => {

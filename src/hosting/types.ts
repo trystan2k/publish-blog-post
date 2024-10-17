@@ -1,5 +1,6 @@
 export enum HostingType {
-  DEV_TO = 'dev.to',
+  DEV_TO = 'devTo',
+  MEDIUM = 'medium',
 }
 
 export type Article = {
