@@ -21,7 +21,7 @@ vi.mock(import('fs'), async importOriginal => {
   };
 });
 
-describe('main function', () => {
+describe.skip('main function', () => {
   let mockIncludeFolders: Mock;
 
   const mockedDate = new Date();

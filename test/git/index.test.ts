@@ -1,16 +1,19 @@
 import { describe, expect, vi, test, beforeEach, Mock, beforeAll } from 'vitest';
 import { exec } from '@actions/exec';
-import { getInput, setFailed } from '@actions/core';
+import { debug, getInput, isDebug, setFailed } from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 
 import {
   authorizeUser,
   getCommitMessage,
-  getGitInstance,
   getFilesToBePublished,
+  getGitInstance,
   gitCheckout,
+  gitCommit,
   gitCommitPush,
+  gitPush,
   gitSetConfig,
+  logBuildDebug,
 } from '@/pbp/git';
 
 vi.mock('@actions/exec');
@@ -34,6 +37,20 @@ describe('Git Utilities', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  describe('logBuildDebug', () => {
+    test('should log a debug message when debug is enabled', () => {
+      vi.mocked(isDebug).mockReturnValue(true);
+      logBuildDebug('Test message');
+      expect(debug).toHaveBeenCalledWith('Test message');
+    });
+
+    test('should not log a debug message when debug is disabled', () => {
+      vi.mocked(isDebug).mockReturnValue(false);
+      logBuildDebug('Test message');
+      expect(debug).not.toHaveBeenCalled();
+    });
   });
 
   describe('getGitInstance', () => {
@@ -70,6 +87,21 @@ describe('Git Utilities', () => {
       await gitCommitPush({ branch: 'main', filePath: 'path/to/file', message: 'Test commit' });
       expect(exec).toHaveBeenCalledWith('git', ['add', 'path/to/file']);
       expect(exec).toHaveBeenCalledWith('git', ['commit', '-m', 'Test commit']);
+      expect(exec).toHaveBeenCalledWith('git', ['push', 'origin', 'main']);
+    });
+  });
+
+  describe('gitCommit', () => {
+    test('should commit and push changes', async () => {
+      await gitCommit({ filePath: 'path/to/file', message: 'Test commit' });
+      expect(exec).toHaveBeenCalledWith('git', ['add', 'path/to/file']);
+      expect(exec).toHaveBeenCalledWith('git', ['commit', '-m', 'Test commit']);
+    });
+  });
+
+  describe('gitPush', () => {
+    test('should commit and push changes', async () => {
+      await gitPush({ branch: 'main' });
       expect(exec).toHaveBeenCalledWith('git', ['push', 'origin', 'main']);
     });
   });
@@ -148,8 +180,9 @@ describe('Git Utilities', () => {
   });
 
   describe('getFilesToBePublished', () => {
-    test('should return modified files', async () => {
-      const mockOutput = 'M\tfile1.txt\nA\tfile2.txt\nD\tfile3.txt\nR077\tfile4.txt\nA\tfile5.txt\nR093\tfile6.txt';
+    test('should return modified or added files', async () => {
+      const mockOutput =
+        'M\tfolderA/file1.md\nA\tfolderB/file2.mdx\nD\tfolder/Afile3.mdx\nR077\tfolderB/file4.ts\nA\tfolderC/file5.md\nR093\tfile6.md';
       vi.mocked(exec).mockImplementation((cmd, args, options) => {
         if (options?.listeners?.stdout) {
           options.listeners.stdout(Buffer.from(mockOutput));
@@ -166,12 +199,35 @@ describe('Git Utilities', () => {
         expect.any(Object),
       );
       expect(modifiedFiles).toEqual([
-        { fileStatus: 'M', fileName: 'file1.txt' },
-        { fileStatus: 'A', fileName: 'file2.txt' },
-        { fileStatus: 'D', fileName: 'file3.txt' },
-        { fileStatus: 'R077', fileName: 'file4.txt' },
-        { fileStatus: 'A', fileName: 'file5.txt' },
-        { fileStatus: 'R093', fileName: 'file6.txt' },
+        { fileStatus: 'M', fileName: 'folderA/file1.md' },
+        { fileStatus: 'A', fileName: 'folderB/file2.mdx' },
+        { fileStatus: 'A', fileName: 'folderC/file5.md' },
+      ]);
+    });
+
+    test('should return filtered by folders modified or added files', async () => {
+      const mockOutput =
+        'M\tfolderA/file1.md\nA\tfolderB/file2.mdx\nD\tfolder/Afile3.mdx\nR077\tfolderB/file4.ts\nA\tfolderC/file5.md\nR093\tfile6.md';
+      vi.mocked(exec).mockImplementation((cmd, args, options) => {
+        if (options?.listeners?.stdout) {
+          options.listeners.stdout(Buffer.from(mockOutput));
+        }
+        return Promise.resolve(0);
+      });
+
+      vi.mocked(getInput).mockReturnValue('folderA\nfolderB');
+
+      context.payload = { before: 'before-sha', after: 'after-sha' };
+
+      const modifiedFiles = await getFilesToBePublished();
+      expect(exec).toHaveBeenCalledWith(
+        'git',
+        ['diff', '--name-status', 'before-sha', 'after-sha'],
+        expect.any(Object),
+      );
+      expect(modifiedFiles).toEqual([
+        { fileStatus: 'M', fileName: 'folderA/file1.md' },
+        { fileStatus: 'A', fileName: 'folderB/file2.mdx' },
       ]);
     });
   });
