@@ -37383,11 +37383,7 @@ const gitPush = async ({ branch }) => {
 };
 const gitCheckout = async () => {
     logBuildInfo('Checking out...');
-    const { rest: { pulls }, } = getGitInstance();
-    const { data: { head: { ref: branch }, }, } = await pulls.get({
-        ...github.context.repo,
-        pull_number: github.context.issue.number,
-    });
+    const branch = github.context.ref.replace('refs/heads/', '');
     await (0,exec.exec)('git', ['fetch', 'origin', branch]);
     await (0,exec.exec)('git', ['checkout', branch]);
     return branch;

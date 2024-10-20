@@ -80,18 +80,7 @@ export const gitPush = async ({ branch }: Pick<GitCommitPush, 'branch'>) => {
 export const gitCheckout = async () => {
   logBuildInfo('Checking out...');
 
-  const {
-    rest: { pulls },
-  } = getGitInstance();
-
-  const {
-    data: {
-      head: { ref: branch },
-    },
-  } = await pulls.get({
-    ...context.repo,
-    pull_number: context.issue.number,
-  });
+  const branch = context.ref.replace('refs/heads/', '');
 
   await exec('git', ['fetch', 'origin', branch]);
   await exec('git', ['checkout', branch]);

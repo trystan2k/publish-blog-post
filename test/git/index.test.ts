@@ -108,16 +108,7 @@ describe('Git', () => {
 
   describe('gitCheckout', () => {
     test('should checkout a branch', async () => {
-      const mockPulls = {
-        get: vi.fn<() => { data: { head: { ref: string } } }>(() => ({ data: { head: { ref: 'feature-branch' } } })),
-      };
-      vi.mocked(getOctokit as Mock).mockReturnValue({ rest: { pulls: mockPulls } });
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      context.repo = { owner: 'owner', repo: 'repo' };
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      context.issue = { number: 1 };
+      context.ref = 'refs/heads/feature-branch';
 
       const branch = await gitCheckout();
       expect(exec).toHaveBeenCalledWith('git', ['fetch', 'origin', 'feature-branch']);
