@@ -37450,6 +37450,9 @@ const getFilesToBePublished = async () => {
     return filterFilesByIncludeFolders(modifiedOrAddedFiles);
 };
 
+// EXTERNAL MODULE: ./node_modules/.pnpm/gray-matter@4.0.3/node_modules/gray-matter/index.js
+var gray_matter = __nccwpck_require__(2796);
+var gray_matter_default = /*#__PURE__*/__nccwpck_require__.n(gray_matter);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(9896);
 var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
@@ -37463,9 +37466,6 @@ const readFile = (filePath) => {
     return external_fs_default().readFileSync(filePath, FILE_ENCODING);
 };
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/gray-matter@4.0.3/node_modules/gray-matter/index.js
-var gray_matter = __nccwpck_require__(2796);
-var gray_matter_default = /*#__PURE__*/__nccwpck_require__.n(gray_matter);
 ;// CONCATENATED MODULE: ./src/utils/matter.ts
 
 const parseMatter = (content) => {
@@ -37474,6 +37474,7 @@ const parseMatter = (content) => {
 };
 
 ;// CONCATENATED MODULE: ./src/posts/content.ts
+
 
 
 const parsePostFileContent = (files) => {
@@ -37492,8 +37493,8 @@ const parsePostFileContent = (files) => {
         .filter(data => data !== null);
 };
 const stringifyPostContent = (body, matterData) => {
-    // @ts-expect-error - This is a valid operation, options object has lineWidth property
-    return matter.stringify(body, matterData, { lineWidth: -1 });
+    // @ts-expect-error - lineWidth is not in the types
+    return gray_matter_default().stringify(body, matterData, { lineWidth: -1 });
 };
 
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.2/node_modules/ky/distribution/errors/HTTPError.js
@@ -38172,7 +38173,7 @@ const publishOrUpdatedPost = async (hostingSDK, hostingKeyName, matterData) => {
 };
 const processPostsData = async (filesData) => {
     const publishTo = getBuildInput('publishTo');
-    if (!publishTo || publishTo.trim().length === 0 || publishTo.split(',').length === 0) {
+    if (!publishTo || publishTo.trim().length === 0) {
         throw new Error('No hosting platform specified to publish the post');
     }
     const publishHostsSDK = new Map();
@@ -38220,8 +38221,8 @@ const main = async () => {
     }
     const filesToPublish = await getFilesToBePublished();
     const parsedPostFilesData = parsePostFileContent(filesToPublish);
-    if (parsedPostFilesData === null || parsedPostFilesData.length === 0) {
-        return;
+    if (!parsedPostFilesData || parsedPostFilesData.length === 0) {
+        return null;
     }
     const modifiedFiles = await processPostsData(parsedPostFilesData);
     await gitSetConfig();

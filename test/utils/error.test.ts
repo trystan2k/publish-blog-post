@@ -3,9 +3,7 @@ import { describe, expect, vi, test } from 'vitest';
 import { postError } from '@/pbp/utils/error';
 import { setBuildFailed } from '@/pbp/git';
 
-vi.mock('@/pbp/git', () => ({
-  setBuildFailed: vi.fn(),
-}));
+vi.mock('@/pbp/git');
 
 describe('error.ts', () => {
   describe('postError', () => {

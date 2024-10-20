@@ -20,7 +20,7 @@ vi.mock('@actions/exec');
 vi.mock('@actions/github');
 vi.mock('@actions/core');
 
-describe('Git Utilities', () => {
+describe('Git', () => {
   beforeAll(() => {
     Object.defineProperty(context, 'repo', {
       value: vi.fn(),

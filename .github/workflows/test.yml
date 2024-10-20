@@ -7,9 +7,9 @@ on:
       - main
 
 jobs:
-  md-reviewr-translator:
+  publish-blog-post:
     runs-on: ubuntu-latest
-    name: A test job to run the Markdown Reviwer and Translator
+    name: A test job to run the Publish Blog Post action
     steps:
       # To use this repository's private action,
       # you must check out the repository

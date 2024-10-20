@@ -21,8 +21,8 @@ const main = async () => {
   const filesToPublish = await getFilesToBePublished();
   const parsedPostFilesData = parsePostFileContent(filesToPublish);
 
-  if (parsedPostFilesData === null || parsedPostFilesData.length === 0) {
-    return;
+  if (!parsedPostFilesData || parsedPostFilesData.length === 0) {
+    return null;
   }
 
   const modifiedFiles = await processPostsData(parsedPostFilesData);

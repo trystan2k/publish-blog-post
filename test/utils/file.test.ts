@@ -1,23 +1,22 @@
 import fs from 'fs';
 
-import { describe, expect, vi, test, Mocked } from 'vitest';
+import { describe, expect, vi, test } from 'vitest';
 
 import { modifyFile, readFile } from '@/pbp/utils/file';
 import { FILE_ENCODING } from '@/pbp/utils/const';
 
 vi.mock('fs');
-const mockedFs = fs as Mocked<typeof fs>;
 
 describe('modifyFile', () => {
   test('should write data to file', async () => {
     const data = 'Hello, world!';
     const filePath = 'path/to/file.txt';
 
-    mockedFs.writeFile.mockResolvedValueOnce(undefined);
+    vi.mocked(fs).writeFile.mockResolvedValueOnce(undefined);
 
     await modifyFile(filePath, data);
 
-    expect(mockedFs.writeFileSync).toHaveBeenCalledWith(filePath, data, FILE_ENCODING);
+    expect(fs.writeFileSync).toHaveBeenCalledWith(filePath, data, FILE_ENCODING);
   });
 });
 
@@ -26,7 +25,7 @@ describe('readFile', () => {
     const data = 'Hello, world!';
     const filePath = 'path/to/file.txt';
 
-    mockedFs.readFileSync.mockReturnValueOnce(data);
+    vi.mocked(fs).readFileSync.mockReturnValueOnce(data);
 
     const result = readFile(filePath);
 

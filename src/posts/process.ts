@@ -1,7 +1,7 @@
 import { stringifyPostContent } from './content';
+import { ContentFileData } from './types';
 
 import { modifyFile } from '@/pbp/utils/file';
-import { FileStatusData } from '@/pbp/git/types';
 import { createHostingAPI } from '@/pbp/hosting';
 import { HostingAPIModel } from '@/pbp/hosting/types';
 import { getBuildInput, logBuildDebug, logBuildError, logBuildInfo } from '@/pbp/git';
@@ -31,14 +31,9 @@ const publishOrUpdatedPost = async (hostingSDK: HostingAPIModel, hostingKeyName:
   return response;
 };
 
-export const processPostsData = async (
-  filesData: {
-    fileData: FileStatusData;
-    matterData: MatterData;
-  }[],
-) => {
+export const processPostsData = async (filesData: ContentFileData[]) => {
   const publishTo = getBuildInput('publishTo');
-  if (!publishTo || publishTo.trim().length === 0 || publishTo.split(',').length === 0) {
+  if (!publishTo || publishTo.trim().length === 0) {
     throw new Error('No hosting platform specified to publish the post');
   }
 

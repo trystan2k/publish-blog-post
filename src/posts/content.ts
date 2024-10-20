@@ -1,8 +1,12 @@
+import matter from 'gray-matter';
+
+import { ContentFileData } from './types';
+
 import { FileStatusData } from '@/pbp/git/types';
 import { readFile } from '@/pbp/utils/file';
 import { MatterData, parseMatter } from '@/pbp/utils/matter';
 
-export const parsePostFileContent = (files: FileStatusData[]) => {
+export const parsePostFileContent = (files: FileStatusData[]): ContentFileData[] => {
   return files
     .map(file => {
       const fileContent = readFile(file.fileName);
@@ -20,6 +24,6 @@ export const parsePostFileContent = (files: FileStatusData[]) => {
 };
 
 export const stringifyPostContent = (body: string, matterData: MatterData['data']) => {
-  // @ts-expect-error - This is a valid operation, options object has lineWidth property
+  // @ts-expect-error - lineWidth is not in the types
   return matter.stringify(body, matterData, { lineWidth: -1 });
 };

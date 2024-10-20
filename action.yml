@@ -8,13 +8,13 @@ inputs:
   token:
     description: 'GITHUB_TOKEN or a `repo` scoped Personal Access Token (PAT)'
     default: ${{ github.token }}
-  devToApiKey:
-    description: API Key to use to publish blog post to Dev.to website
-    required: false    
   publishTo:
     description: Websites to publish blog post. Current allowed values are 'devTo' and 'medium'
     required: true
     default: 'devTo,medium'
+  devToApiKey:
+    description: API Key to use to publish blog post to Dev.to website
+    required: false    
   includeFolders:
     description: Folders to look for post files to publish/update. Multiple folders can be speficied, one folder per line
     required: false
