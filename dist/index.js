@@ -7560,10 +7560,7 @@ const engines = exports = module.exports;
 
 engines.yaml = {
   parse: yaml.safeLoad.bind(yaml),
-  stringify: function (obj, options) {
-    console.log('mmaaaaaasasajsajsajskjakjsa', options)
-    return yaml.safeDump(obj, options);
-  }
+  stringify: yaml.safeDump.bind(yaml)
 };
 
 /**
@@ -7572,9 +7569,8 @@ engines.yaml = {
 
 engines.json = {
   parse: JSON.parse.bind(JSON),
-  stringify: function (obj, options) {
-    const opts = Object.assign({ replacer: null, space: 2 }, options);
-    console.log('mamameeee')
+  stringify: function(obj, options) {
+    const opts = Object.assign({replacer: null, space: 2}, options);
     return JSON.stringify(obj, opts.replacer, opts.space);
   }
 };
@@ -7598,7 +7594,7 @@ engines.javascript = {
       throw new SyntaxError(err);
     }
   },
-  stringify: function () {
+  stringify: function() {
     throw new Error('stringifying JavaScript is not supported');
   }
 };
@@ -7674,7 +7670,7 @@ const typeOf = __nccwpck_require__(1404);
 const getEngine = __nccwpck_require__(8208);
 const defaults = __nccwpck_require__(8828);
 
-module.exports = function (file, data, options) {
+module.exports = function(file, data, options) {
   if (data == null && options == null) {
     switch (typeOf(file)) {
       case 'object':
@@ -7701,8 +7697,6 @@ module.exports = function (file, data, options) {
   if (typeof engine.stringify !== 'function') {
     throw new TypeError('expected "' + language + '.stringify" to be a function');
   }
-
-  console.log('mamameeee22222', language)
 
   data = Object.assign({}, file.data, data);
   const open = opts.delimiters[0];
