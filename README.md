@@ -126,6 +126,9 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v4
+        # IMPORTANT: Fetch all history for all tags and branches so it can compare commits and get files changed
+        with:
+          fetch-depth: 0
       - name: Test the publish-blog-post action
         uses: trystan2k/publish-blog-post@v1
         id: publish-blog-post
