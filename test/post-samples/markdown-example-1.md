@@ -2,9 +2,10 @@
 title: A Brief History of the World
 published: false
 description: The earliest stages of human history are known as prehistory, marked by the development of tools, fire, and early communication through cave art. Humans lived as hunter-gatherers, with evidence of their existence found in Africa as early as 200,000 years ago.
-tags: history, civilization, prehistory, modern
+tags: history, civilization, world, modern
 cover_image: 'https://images.unsplash.com/photo-1521295121783-8a321d551ad2?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 published_at: null
+devTo: false
 ---
 
 # A Brief History of the World

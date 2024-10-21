@@ -6,6 +6,7 @@ import {
   gitCommit,
   gitPush,
   gitSetConfig,
+  logBuildInfo,
   setBuildFailed,
 } from '@/pbp/git';
 import { parsePostFileContent } from '@/pbp/posts/content';
@@ -32,14 +33,16 @@ const main = async () => {
 
   const commitMessage = getCommitMessage(ACTION_INPUT_KEY_COMMIT_MESSAGE_TEMPLATE);
 
-  modifiedFiles.forEach(async fileName => {
+  for (const fileName of modifiedFiles) {
     await gitCommit({
       filePath: fileName,
       message: commitMessage.replace('%file', fileName),
     });
-  });
+  }
 
-  gitPush({ branch });
+  await gitPush({ branch });
+
+  logBuildInfo('Build completed successfully.');
 };
 
 main().catch(setBuildFailed);

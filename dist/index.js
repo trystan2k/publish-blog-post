@@ -38218,13 +38218,14 @@ const main = async () => {
     await gitSetConfig();
     const branch = await gitCheckout();
     const commitMessage = getCommitMessage(ACTION_INPUT_KEY_COMMIT_MESSAGE_TEMPLATE);
-    modifiedFiles.forEach(async (fileName) => {
+    for (const fileName of modifiedFiles) {
         await gitCommit({
             filePath: fileName,
             message: commitMessage.replace('%file', fileName),
         });
-    });
-    gitPush({ branch });
+    }
+    await gitPush({ branch });
+    logBuildInfo('Build completed successfully.');
 };
 main().catch(setBuildFailed);
 /* harmony default export */ const src = (main);

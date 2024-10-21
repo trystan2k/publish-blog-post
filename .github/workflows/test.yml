@@ -25,6 +25,8 @@ jobs:
         uses: ./ # Uses an action in the root directory
         id: publish-blog-post
         with:
+          publishTo: 'devTo'
           devToApiKey: ${{ secrets.DEV_TO_API_KEY }}
           includeFolders: |-
-            pages/posts
+            test/post-samples
+          commitMessage: 'chore(*): publish/update %file with updated data'
