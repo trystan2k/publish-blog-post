@@ -2,9 +2,8 @@ import { describe, expect, Mock, test, vi } from 'vitest';
 
 import { createHostingAPI } from '@/pbp/hosting';
 import { ContentFileData } from '@/pbp/posts/types';
-import { getBuildInput } from '@/pbp/git';
 import { processPostsData } from '@/pbp/posts/process';
-import { HostingType } from '@/pbp/hosting/types';
+import { HostingAPIModel, HostingType } from '@/pbp/hosting/types';
 
 vi.mock('@/pbp/git');
 vi.mock('@/pbp/hosting');
@@ -12,22 +11,7 @@ vi.mock('@/pbp/utils/file');
 
 describe('Process', () => {
   describe('processPostsData', () => {
-    test('should throw if no hosting platform is specified', async () => {
-      vi.mocked(getBuildInput).mockReturnValueOnce(null as unknown as string);
-      expect(async () => await processPostsData([])).rejects.toThrowError(
-        'No hosting platform specified to publish the post',
-      );
-
-      vi.mocked(getBuildInput).mockReturnValueOnce('');
-      expect(async () => await processPostsData([])).rejects.toThrowError(
-        'No hosting platform specified to publish the post',
-      );
-    });
-
     test('should process post data and publish a new post', async () => {
-      vi.mocked(getBuildInput).mockReturnValueOnce(HostingType.DEV_TO);
-      vi.mocked(getBuildInput).mockReturnValueOnce('apiKeyValue');
-
       const mockCreatePost = vi.fn().mockImplementation(async () => ({
         id: 1,
         published_at: '2021-01-01',
@@ -40,6 +24,9 @@ describe('Process', () => {
       (createHostingAPI as Mock).mockReturnValueOnce({
         createPost: mockCreatePost,
       });
+
+      const publishHostSDKs = new Map<string, HostingAPIModel>();
+      publishHostSDKs.set(HostingType.DEV_TO, createHostingAPI(HostingType.DEV_TO, 'devToApiKey'));
 
       const filesData: ContentFileData[] = [
         {
@@ -64,19 +51,12 @@ describe('Process', () => {
         },
       ];
 
-      const result = await processPostsData(filesData);
-      expect(mockCreatePost).toHaveBeenLastCalledWith({
-        article: {
-          body_markdown: '---\ntitle: title\ndescription: description\ntags:\n  - tag1\n  - tag2\n---\ncontent\n',
-        },
-      });
+      const result = await processPostsData(filesData, publishHostSDKs);
+      expect(mockCreatePost).toHaveBeenLastCalledWith(filesData[0].matterData);
       expect(result).toEqual(new Set(['test.md']));
     });
 
     test('should process post data and update a published post', async () => {
-      vi.mocked(getBuildInput).mockReturnValueOnce(HostingType.DEV_TO);
-      vi.mocked(getBuildInput).mockReturnValueOnce('apiKeyValue');
-
       const mockUpdatePost = vi.fn().mockImplementation(async () => ({
         id: 1,
         published_at: '2021-01-01',
@@ -89,6 +69,9 @@ describe('Process', () => {
       (createHostingAPI as Mock).mockReturnValueOnce({
         updatePost: mockUpdatePost,
       });
+
+      const publishHostSDKs = new Map<string, HostingAPIModel>();
+      publishHostSDKs.set(HostingType.DEV_TO, createHostingAPI(HostingType.DEV_TO, 'devToApiKey'));
 
       const filesData: ContentFileData[] = [
         {
@@ -114,20 +97,12 @@ describe('Process', () => {
         },
       ];
 
-      const result = await processPostsData(filesData);
-      expect(mockUpdatePost).toHaveBeenLastCalledWith(1, {
-        article: {
-          body_markdown:
-            '---\ntitle: title\ndescription: description\ntags:\n  - tag1\n  - tag2\ndevTo: 1\n---\ncontent\n',
-        },
-      });
+      const result = await processPostsData(filesData, publishHostSDKs);
+      expect(mockUpdatePost).toHaveBeenLastCalledWith(filesData[0].matterData);
       expect(result).toEqual(new Set(['test.md']));
     });
 
     test('should process post data and not publish or update a post when hosting is false', async () => {
-      vi.mocked(getBuildInput).mockReturnValueOnce(HostingType.DEV_TO);
-      vi.mocked(getBuildInput).mockReturnValueOnce('apiKeyValue');
-
       const mockUpdatePost = vi.fn();
       const mockCreatePost = vi.fn();
 
@@ -135,6 +110,9 @@ describe('Process', () => {
         updatePost: mockUpdatePost,
         createPost: mockCreatePost,
       });
+
+      const publishHostSDKs = new Map<string, HostingAPIModel>();
+      publishHostSDKs.set(HostingType.DEV_TO, createHostingAPI(HostingType.DEV_TO, 'devToApiKey'));
 
       const filesData: ContentFileData[] = [
         {
@@ -160,16 +138,13 @@ describe('Process', () => {
         },
       ];
 
-      const result = await processPostsData(filesData);
+      const result = await processPostsData(filesData, publishHostSDKs);
       expect(mockUpdatePost).not.toHaveBeenCalled();
       expect(mockCreatePost).not.toHaveBeenCalled();
       expect(result).toEqual(new Set([]));
     });
 
     test('should process post data and not modify any file if publish fails', async () => {
-      vi.mocked(getBuildInput).mockReturnValueOnce(HostingType.DEV_TO);
-      vi.mocked(getBuildInput).mockReturnValueOnce('apiKeyValue');
-
       const mockUpdatePost = vi.fn().mockRejectedValue(new Error('Error updating post'));
       const mockCreatePost = vi.fn().mockRejectedValue(new Error('Error creating post'));
 
@@ -177,6 +152,9 @@ describe('Process', () => {
         updatePost: mockUpdatePost,
         createPost: mockCreatePost,
       });
+
+      const publishHostSDKs = new Map<string, HostingAPIModel>();
+      publishHostSDKs.set(HostingType.DEV_TO, createHostingAPI(HostingType.DEV_TO, 'devToApiKey'));
 
       const filesData: ContentFileData[] = [
         {
@@ -201,7 +179,7 @@ describe('Process', () => {
         },
       ];
 
-      const result = await processPostsData(filesData);
+      const result = await processPostsData(filesData, publishHostSDKs);
       expect(mockCreatePost).toHaveBeenCalled();
       expect(result).toEqual(new Set([]));
     });

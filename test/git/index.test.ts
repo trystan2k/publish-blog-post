@@ -183,7 +183,7 @@ describe('Git', () => {
 
       context.payload = { before: 'before-sha', after: 'after-sha' };
 
-      const modifiedFiles = await getFilesToBePublished();
+      const modifiedFiles = await getFilesToBePublished([]);
       expect(exec).toHaveBeenCalledWith(
         'git',
         ['diff', '--name-status', 'before-sha', 'after-sha'],
@@ -206,11 +206,9 @@ describe('Git', () => {
         return Promise.resolve(0);
       });
 
-      vi.mocked(getInput).mockReturnValue('folderA\nfolderB');
-
       context.payload = { before: 'before-sha', after: 'after-sha' };
 
-      const modifiedFiles = await getFilesToBePublished();
+      const modifiedFiles = await getFilesToBePublished(['folderA', 'folderB']);
       expect(exec).toHaveBeenCalledWith(
         'git',
         ['diff', '--name-status', 'before-sha', 'after-sha'],

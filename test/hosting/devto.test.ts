@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, Mock } from 'vitest';
+import { describe, expect, vi, Mock, test } from 'vitest';
 import ky, { HTTPError, KyResponse } from 'ky';
 
 import { createDevToSDK } from '@/pbp/hosting/devto';
 import { HostingAPIModel } from '@/pbp/hosting/types';
+import { MatterData } from '@/pbp/utils/matter';
 
 vi.mock('ky');
 
@@ -11,23 +12,27 @@ describe('DevToSDK', () => {
   const apiKey = 'test-api-key';
   const mockPostResponse = {
     id: 1,
+    published_at: '2023-01-02T00:00:00Z',
     slug: 'test-slug',
-    path: '/test-path',
-    url: 'https://dev.to/test-url',
     created_at: '2023-01-01T00:00:00Z',
-    published_at: '2023-01-01T00:00:00Z',
   };
 
-  it('should throw an error if the API key is not set', () => {
+  test('should throw an error if the API key is not set', () => {
     expect(() => createDevToSDK('')).toThrowError('Dev.to API key is not set.');
   });
 
   describe('createPost', () => {
-    it('should create a post', async () => {
-      const post = {
-        article: {
+    test('should create a post', async () => {
+      const matterData: MatterData = {
+        data: {
           title: 'Test Title',
-          body_markdown: 'Test Body',
+        },
+        content: 'Test Body',
+        orig: '',
+        language: '',
+        matter: '',
+        stringify: function (lang: string): string {
+          throw new Error('Function not implemented.');
         },
       };
 
@@ -38,9 +43,13 @@ describe('DevToSDK', () => {
       });
 
       sdk = createDevToSDK(apiKey);
-      const response = await sdk.createPost(post);
+      const response = await sdk.createPost(matterData);
 
-      expect(response).toEqual(mockPostResponse);
+      expect(response).toEqual({
+        devTo: 1,
+        published_devTo_at: '2023-01-02T00:00:00Z',
+      });
+
       expect(ky.create).toHaveBeenCalledWith({
         prefixUrl: 'https://dev.to/api',
         headers: {
@@ -48,14 +57,26 @@ describe('DevToSDK', () => {
           Accept: 'application/vnd.forem.api-v1+json',
         },
       });
-      expect(ky.create().post).toHaveBeenCalledWith('articles', { json: post });
+      expect(ky.create().post).toHaveBeenCalledWith('articles', {
+        json: {
+          article: {
+            body_markdown: '---\ntitle: Test Title\n---\nTest Body\n',
+          },
+        },
+      });
     });
 
-    it('should fail to create a post with a HTTPError', async () => {
-      const post = {
-        article: {
+    test('should fail to create a post with a HTTPError', async () => {
+      const matterData: MatterData = {
+        data: {
           title: 'Test Title',
-          body_markdown: 'Test Body',
+        },
+        content: 'Test Body',
+        orig: '',
+        language: '',
+        matter: '',
+        stringify: function (lang: string): string {
+          throw new Error('Function not implemented.');
         },
       };
 
@@ -81,16 +102,22 @@ describe('DevToSDK', () => {
       });
 
       sdk = createDevToSDK(apiKey);
-      expect(async () => await sdk.createPost(post)).rejects.toThrowError(
+      expect(async () => await sdk.createPost(matterData)).rejects.toThrowError(
         'Error publishing post \n Status: 422 \n Reason: HTTP Error 422',
       );
     });
 
-    it('should fail to create a post with another error type', async () => {
-      const post = {
-        article: {
+    test('should fail to create a post with another error type', async () => {
+      const matterData: MatterData = {
+        data: {
           title: 'Test Title',
-          body_markdown: 'Test Body',
+        },
+        content: 'Test Body',
+        orig: '',
+        language: '',
+        matter: '',
+        stringify: function (lang: string): string {
+          throw new Error('Function not implemented.');
         },
       };
 
@@ -101,30 +128,41 @@ describe('DevToSDK', () => {
       });
 
       sdk = createDevToSDK(apiKey);
-      expect(async () => await sdk.createPost(post)).rejects.toThrowError('Error converting response to JSON');
+      expect(async () => await sdk.createPost(matterData)).rejects.toThrowError('Error converting response to JSON');
     });
   });
 
   describe('updatePost', () => {
-    it('should update a post', async () => {
-      const post = {
-        article: {
-          title: 'Updated Title',
-          body_markdown: 'Updated Body',
+    test('should update a post', async () => {
+      const matterData: MatterData = {
+        data: {
+          title: 'Test Title',
+          devTo: 1,
+        },
+        content: 'Test Body',
+        orig: '',
+        language: '',
+        matter: '',
+        stringify: function (lang: string): string {
+          throw new Error('Function not implemented.');
         },
       };
-      const postId = 1;
 
       (ky.create as Mock).mockReturnValue({
         put: vi.fn().mockReturnValue({
-          json: vi.fn().mockResolvedValue(mockPostResponse),
+          json: vi.fn().mockResolvedValue({ ...mockPostResponse, edited_at: '2023-01-03T00:00:00Z' }),
         }),
       });
 
       sdk = createDevToSDK(apiKey);
-      const response = await sdk.updatePost(postId, post);
+      const response = await sdk.updatePost(matterData);
 
-      expect(response).toEqual(mockPostResponse);
+      expect(response).toEqual({
+        devTo: 1,
+        published_devTo_at: '2023-01-02T00:00:00Z',
+        updated_devTo_at: '2023-01-03T00:00:00Z',
+      });
+
       expect(ky.create).toHaveBeenCalledWith({
         prefixUrl: 'https://dev.to/api',
         headers: {
@@ -132,17 +170,29 @@ describe('DevToSDK', () => {
           Accept: 'application/vnd.forem.api-v1+json',
         },
       });
-      expect(ky.create().put).toHaveBeenCalledWith(`articles/${postId}`, { json: post });
+      expect(ky.create().put).toHaveBeenCalledWith(`articles/1`, {
+        json: {
+          article: {
+            body_markdown: '---\ntitle: Test Title\n---\nTest Body\n',
+          },
+        },
+      });
     });
 
-    it('should fail to update a post with a HTTPError', async () => {
-      const post = {
-        article: {
-          title: 'Updated Title',
-          body_markdown: 'Updated Body',
+    test('should fail to update a post with a HTTPError', async () => {
+      const matterData: MatterData = {
+        data: {
+          title: 'Test Title',
+          devTo: 1,
+        },
+        content: 'Test Body',
+        orig: '',
+        language: '',
+        matter: '',
+        stringify: function (lang: string): string {
+          throw new Error('Function not implemented.');
         },
       };
-      const postId = 1;
 
       HTTPError.prototype.response = new Response(JSON.stringify({ error: 'HTTP Error 422' }), {
         status: 422,
@@ -166,19 +216,25 @@ describe('DevToSDK', () => {
       });
 
       sdk = createDevToSDK(apiKey);
-      expect(async () => await sdk.updatePost(postId, post)).rejects.toThrowError(
+      expect(async () => await sdk.updatePost(matterData)).rejects.toThrowError(
         'Error updating post \n Status: 422 \n Reason: HTTP Error 422',
       );
     });
 
-    it('should fail to update a post with another error type', async () => {
-      const post = {
-        article: {
-          title: 'Updated Title',
-          body_markdown: 'Updated Body',
+    test('should fail to update a post with another error type', async () => {
+      const matterData: MatterData = {
+        data: {
+          title: 'Test Title',
+          devTo: 1,
+        },
+        content: 'Test Body',
+        orig: '',
+        language: '',
+        matter: '',
+        stringify: function (lang: string): string {
+          throw new Error('Function not implemented.');
         },
       };
-      const postId = 1;
 
       (ky.create as Mock).mockReturnValue({
         put: vi.fn().mockReturnValue({
@@ -187,7 +243,7 @@ describe('DevToSDK', () => {
       });
 
       sdk = createDevToSDK(apiKey);
-      expect(async () => await sdk.updatePost(postId, post)).rejects.toThrowError('Error converting response to JSON');
+      expect(async () => await sdk.updatePost(matterData)).rejects.toThrowError('Error converting response to JSON');
     });
   });
 });
