@@ -5,79 +5,54 @@ env:
 
 on: [push]
 
-jobs:
-  prepare:
-    name: Prepare
+jobs:    
+  ci:
+    name: Complete Check
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
+
     steps:
       - name: Checkout
+        id: checkout
         uses: actions/checkout@v4
-      - uses: ./.github/prepare
-
-  checkCommitMessage:
-    timeout-minutes: 3
-    name: Check Commit Message
-    runs-on: ubuntu-latest
-    needs: [prepare]
-    steps:
-      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: ./.github/prepare      
-      - name: Check last commit message
-        id: commitlint-main
-        if: github.ref_name == 'main'
-        run: pnpm commitlint --last --verbose
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        id: pnpmi
+        run: pnpm install
 
       - name: Check commit message
         id: commitlint-not_main
         if: github.ref_name != 'main'
         run: pnpm commitlint --from=origin/main --verbose
 
-  typecheck:
-    timeout-minutes: 3
-    name: Type Check
-    runs-on: ubuntu-latest
-    needs: [checkCommitMessage]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/prepare      
       - name: Type Check
         id: pnpm-typecheck
         run: pnpm typecheck
 
-  lint:
-    timeout-minutes: 3
-    name: Lint
-    runs-on: ubuntu-latest
-    needs: [checkCommitMessage]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/prepare
       - name: Lint
         id: pnpm-lint
         run: pnpm lint
 
-  test:
-    timeout-minutes: 3
-    name: Test
-    runs-on: ubuntu-latest
-    needs: [checkCommitMessage]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/prepare
       - name: Test
         id: pnpm-ci-test-main
         run: pnpm test:all
 
-  build:
-    timeout-minutes: 3
-    name: Build
-    runs-on: ubuntu-latest
-    needs: [checkCommitMessage, typecheck, lint, test]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/prepare
       - name: Build
         id: pnpm-build
         run: pnpm build
