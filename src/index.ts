@@ -86,6 +86,11 @@ const main = async () => {
 
   const modifiedFiles = await processPostsData(filesToBeProcessed, publishHostsSDK);
 
+  if (!modifiedFiles || modifiedFiles.size === 0) {
+    logBuildInfo('No files modified.');
+    return null;
+  }
+
   await commitPushModifiedFiles(modifiedFiles);
 
   logBuildInfo('Build completed successfully.');

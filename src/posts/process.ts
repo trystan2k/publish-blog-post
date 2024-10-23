@@ -6,14 +6,19 @@ import { HostingAPIModel } from '@/pbp/hosting/types';
 import { logBuildDebug, logBuildError, logBuildInfo } from '@/pbp/git';
 import { MatterData } from '@/pbp/utils/matter';
 
-const publishOrUpdatedPost = async (hostingSDK: HostingAPIModel, hostingKeyName: string, matterData: MatterData) => {
+const publishOrUpdatedPost = async (
+  hostingSDK: HostingAPIModel,
+  hostingKeyName: string,
+  fileName: string,
+  matterData: MatterData,
+) => {
   let response = null;
   if (matterData.data[`${hostingKeyName}`] === undefined || matterData.data[`${hostingKeyName}`] === null) {
     response = await hostingSDK.createPost(matterData);
   } else if (matterData.data[`${hostingKeyName}`] !== false) {
     response = await hostingSDK.updatePost(matterData);
   } else {
-    logBuildInfo(`Post is not published to ${hostingKeyName}`);
+    logBuildInfo(`File ${fileName} will not be publised to ${hostingKeyName}`);
   }
 
   return response;
@@ -27,7 +32,7 @@ export const processPostsData = async (filesData: ContentFileData[], publishHost
 
     try {
       for (const [host, hostingSDK] of publishHostsSDK.entries()) {
-        const response = await publishOrUpdatedPost(hostingSDK, host, matterData);
+        const response = await publishOrUpdatedPost(hostingSDK, host, fileData.fileName, matterData);
 
         if (response !== null) {
           const publishedMatterData: MatterData['data'] = {

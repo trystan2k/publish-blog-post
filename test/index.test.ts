@@ -74,7 +74,7 @@ describe('main function', () => {
     expect(processPostsData).not.toHaveBeenCalled();
   });
 
-  test('should not publish any post publish to is not informed', async () => {
+  test('should not publish any post if publish to is not informed', async () => {
     vi.mocked(authorizeUser).mockResolvedValue(true);
 
     vi.mocked(getBuildInput).mockImplementation((key: string) => {
@@ -118,6 +118,56 @@ describe('main function', () => {
 
     expect(result).toBeNull();
     expect(processPostsData).not.toHaveBeenCalled();
+  });
+
+  test('should process files and not commit or push if file is set to no be published', async () => {
+    vi.mocked(authorizeUser).mockResolvedValue(true);
+
+    vi.mocked(getBuildInput).mockImplementation((key: string) => {
+      if (key === ACTION_INPUT_KEY_INCLUDE_FOLDERS) {
+        return 'test/examples';
+      } else if (key === ACTION_INPUT_KEY_PUBLISH_TO) {
+        return 'devTo';
+      } else if (key === `devTo${ACTION_INPUT_KEY_API_KEY}`) {
+        return '123456';
+      } else if (key === ACTION_INPUT_KEY_COMMIT_MESSAGE_TEMPLATE) {
+        return 'Publishing %file';
+      }
+
+      return '';
+    });
+
+    vi.mocked(getFilesToBePublished).mockResolvedValue([
+      {
+        fileStatus: 'A',
+        fileName: 'test/examples/markdown-example-1.md',
+      },
+    ]);
+    const filesToPublish = [
+      {
+        fileData: {
+          fileStatus: 'A',
+          fileName: 'test/examples/markdown-example-1.md',
+        },
+        matterData: {
+          content: '---\ntitle: Test post\ndevTo: false\n---\n\nThis is a test post.',
+          data: { title: 'Test post' },
+          orig: '',
+          language: '',
+          matter: '',
+          stringify: function (lang: string): string {
+            throw new Error('Function not implemented.');
+          },
+        },
+      },
+    ];
+    vi.mocked(parsePostFileContent).mockReturnValue(filesToPublish);
+    vi.mocked(processPostsData).mockResolvedValue(new Set([]));
+
+    await main();
+    expect(processPostsData).toHaveBeenCalledWith(filesToPublish, new Map([['devTo', expect.any(HostingAPI)]]));
+    expect(getCommitMessage).not.toHaveBeenCalled();
+    expect(gitPush).not.toHaveBeenCalled();
   });
 
   test('should process files, commit and push published/updated posts', async () => {

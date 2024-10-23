@@ -38170,7 +38170,7 @@ const getFilesToBePublished = async (includeFolders) => {
 
 
 
-const publishOrUpdatedPost = async (hostingSDK, hostingKeyName, matterData) => {
+const publishOrUpdatedPost = async (hostingSDK, hostingKeyName, fileName, matterData) => {
     let response = null;
     if (matterData.data[`${hostingKeyName}`] === undefined || matterData.data[`${hostingKeyName}`] === null) {
         response = await hostingSDK.createPost(matterData);
@@ -38179,7 +38179,7 @@ const publishOrUpdatedPost = async (hostingSDK, hostingKeyName, matterData) => {
         response = await hostingSDK.updatePost(matterData);
     }
     else {
-        logBuildInfo(`Post is not published to ${hostingKeyName}`);
+        logBuildInfo(`File ${fileName} will not be publised to ${hostingKeyName}`);
     }
     return response;
 };
@@ -38189,7 +38189,7 @@ const processPostsData = async (filesData, publishHostsSDK) => {
         const { matterData, fileData } = data;
         try {
             for (const [host, hostingSDK] of publishHostsSDK.entries()) {
-                const response = await publishOrUpdatedPost(hostingSDK, host, matterData);
+                const response = await publishOrUpdatedPost(hostingSDK, host, fileData.fileName, matterData);
                 if (response !== null) {
                     const publishedMatterData = {
                         ...matterData.data,
@@ -38265,6 +38265,10 @@ const main = async () => {
         return null;
     }
     const modifiedFiles = await processPostsData(filesToBeProcessed, publishHostsSDK);
+    if (!modifiedFiles || modifiedFiles.size === 0) {
+        logBuildInfo('No files modified.');
+        return null;
+    }
     await commitPushModifiedFiles(modifiedFiles);
     logBuildInfo('Build completed successfully.');
 };
