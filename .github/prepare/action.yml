@@ -1,0 +1,42 @@
+name: 'Prepare'
+description: 'Reusable workflow that prepare environment'
+inputs:
+  action:
+    description: Action to be performed. Values can be persist or retrieve
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Restore cached workspace
+      id: cache-workspace-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ github.workspace }}/node_modules
+        key: cache-${{ github.run_id }}-${{ github.run_attempt }}
+    
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
+    - name: Setup Node.js
+      id: setup-node
+      uses: actions/setup-node@v4
+      with:
+        cache: 'pnpm'
+        node-version: 20
+
+    - name: Install Dependencies
+      if: steps.cache-workspace-restore.outputs.cache-hit != 'true'
+      run: pnpm install
+      shell: bash
+          
+    - name: Save workspace cache
+      if: steps.cache-workspace-restore.outputs.cache-hit != 'true'
+      id: cache-workspace-save
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ github.workspace }}/node_modules
+        key: ${{ steps.cache-workspace-restore.outputs.cache-primary-key }}

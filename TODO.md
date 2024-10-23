@@ -5,33 +5,8 @@ Add:
 - <https://www.npmjs.com/package/@eslint/markdown>
 - <https://www.npmjs.com/package/@eslint/json>
 
-Check if possible to not run GitHub Actions when autor is email is 'dependabot[bot]'
-
-```yaml
-name: CI
-
-on: [push, pull_request]
-
-jobs:
-  build:
-    if: "!contains(github.event.head_commit.author.email, 'dependabot[bot]')"
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run tests
-      run: npm test
-```
+Publish to NPM registry
+<https://github.com/actions/setup-node/blob/main/docs/advanced-usage.md#publish-to-npmjs-and-gpr-with-npm>
 
 - Create a logging system
 
