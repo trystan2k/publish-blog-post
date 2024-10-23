@@ -10834,7 +10834,7 @@ module.exports = new Schema({
     __nccwpck_require__(7906),
     __nccwpck_require__(9806),
     __nccwpck_require__(1586),
-    __nccwpck_require__(8056)
+    __nccwpck_require__(5675)
   ]
 });
 
@@ -11858,7 +11858,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
 
 /***/ }),
 
-/***/ 8056:
+/***/ 5675:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
@@ -15661,7 +15661,7 @@ const {
 /** @type {import('http2')} */
 let http2
 try {
-  http2 = __nccwpck_require__(5675)
+  http2 = __nccwpck_require__(8056)
 } catch {
   // @ts-ignore
   http2 = { constants: {} }
@@ -35487,7 +35487,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("http");
 
 /***/ }),
 
-/***/ 5675:
+/***/ 8056:
 /***/ ((module) => {
 
 module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("http2");
@@ -37314,179 +37314,6 @@ __nccwpck_require__.d(__webpack_exports__, {
   A: () => (/* binding */ src)
 });
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@1.10.1/node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(7627);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+exec@1.1.1/node_modules/@actions/exec/lib/exec.js
-var exec = __nccwpck_require__(9365);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@6.0.0/node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(3802);
-;// CONCATENATED MODULE: ./src/utils/const.ts
-const supportedFileExtensions = ['.md', '.mdx'];
-const GIT_ADD_FILE_STATUS = 'A';
-const GIT_MODIFIED_FILE_STATUS = 'M';
-const FILE_ENCODING = 'utf-8';
-const ACTION_INPUT_KEY_TOKEN = 'token';
-const ACTION_INPUT_KEY_INCLUDE_FOLDERS = 'includeFolders';
-const ACTION_INPUT_KEY_COMMIT_MESSAGE_TEMPLATE = 'commitMessage';
-
-;// CONCATENATED MODULE: ./src/git/index.ts
-
-
-
-
-const setBuildFailed = core.setFailed;
-const getBuildInput = core.getInput;
-const buildContext = (/* unused pure expression or super */ null && (context));
-const logBuildInfo = core.info;
-const logBuildDebug = (message) => {
-    if ((0,core.isDebug)()) {
-        (0,core.debug)(message);
-    }
-};
-// eslint-disable-next-line no-console
-const logBuildError = console.error;
-const getGitInstance = () => {
-    const GITHUB_TOKEN = getBuildInput(ACTION_INPUT_KEY_TOKEN);
-    if (!GITHUB_TOKEN) {
-        (0,core.setFailed)('Error: GITHUB_TOKEN is a required input.');
-    }
-    return (0,github.getOctokit)(GITHUB_TOKEN);
-};
-const gitSetConfig = async () => {
-    logBuildInfo('Setting git config...');
-    const user = {
-        name: 'github-actions[bot]',
-        email: '41898282+github-actions[bot]@users.noreply.github.com',
-    };
-    await (0,exec.exec)('git', ['config', 'user.name', user.name]);
-    await (0,exec.exec)('git', ['config', 'user.email', user.email]);
-};
-const gitCommitPush = async ({ branch, filePath, message }) => {
-    logBuildInfo('Committing and pushing...');
-    await gitCommit({ filePath, message });
-    await gitPush({ branch });
-};
-const gitCommit = async ({ filePath, message }) => {
-    logBuildInfo('Committing...');
-    await (0,exec.exec)('git', ['add', filePath]);
-    await (0,exec.exec)('git', ['commit', '-m', message]);
-};
-const gitPush = async ({ branch }) => {
-    logBuildInfo('Pushing...');
-    await (0,exec.exec)('git', ['push', 'origin', branch]);
-};
-const gitCheckout = async () => {
-    logBuildInfo('Checking out...');
-    const branch = github.context.ref.replace('refs/heads/', '');
-    await (0,exec.exec)('git', ['fetch', 'origin', branch]);
-    await (0,exec.exec)('git', ['checkout', branch]);
-    return branch;
-};
-const authorizeUser = async () => {
-    const { rest: { repos }, } = getGitInstance();
-    const { data: user } = await repos.getCollaboratorPermissionLevel({
-        ...github.context.repo,
-        username: github.context.actor,
-    });
-    logBuildInfo(`User permission: ${user.permission}`);
-    return user.permission === 'admin' || user.permission === 'write';
-};
-const getCommitMessage = (template) => {
-    const commitMessageTemplate = getBuildInput(template);
-    return commitMessageTemplate;
-};
-const parseGitStatusOutput = (output) => {
-    const lines = output.trim().split('\n');
-    return lines.map(line => {
-        const parts = line.trim().split(/\s+/);
-        const fileStatus = parts[0].trim();
-        const fileName = parts.slice(1).join(' ').trim();
-        return { fileStatus, fileName };
-    });
-};
-const getFilesBetweenCommits = async (fromCommitHash, toCommitHash) => {
-    let files = '';
-    await (0,exec.exec)('git', ['diff', '--name-status', fromCommitHash, toCommitHash], {
-        listeners: {
-            stdout: (data) => {
-                files += data.toString();
-            },
-        },
-    });
-    return parseGitStatusOutput(files);
-};
-const filterFilesByGitStatus = (files, status) => {
-    // Filter to get only the files modified and added
-    return files
-        .filter(file => status.includes(file.fileStatus))
-        .filter(file => {
-        return supportedFileExtensions.some(ext => file.fileName.endsWith(ext));
-    });
-};
-const filterFilesByIncludeFolders = (files) => {
-    // Check for include folders
-    const includeFolders = getBuildInput(ACTION_INPUT_KEY_INCLUDE_FOLDERS);
-    if (!includeFolders || includeFolders.trim().length === 0) {
-        return files;
-    }
-    return files.filter(data => includeFolders.split(/\r|\n/).some(folder => data.fileName.includes(folder)));
-};
-const getFilesToBePublished = async () => {
-    const filesSinceLastCommit = await getFilesBetweenCommits(github.context.payload.before, github.context.payload.after);
-    const modifiedOrAddedFiles = filterFilesByGitStatus(filesSinceLastCommit, [
-        GIT_ADD_FILE_STATUS,
-        GIT_MODIFIED_FILE_STATUS,
-    ]);
-    return filterFilesByIncludeFolders(modifiedOrAddedFiles);
-};
-
-// EXTERNAL MODULE: ./node_modules/.pnpm/gray-matter@4.0.3/node_modules/gray-matter/index.js
-var gray_matter = __nccwpck_require__(2796);
-var gray_matter_default = /*#__PURE__*/__nccwpck_require__.n(gray_matter);
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(9896);
-var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
-;// CONCATENATED MODULE: ./src/utils/file.ts
-
-
-const modifyFile = (filePath, data) => {
-    external_fs_default().writeFileSync(filePath, data, FILE_ENCODING);
-};
-const readFile = (filePath) => {
-    return external_fs_default().readFileSync(filePath, FILE_ENCODING);
-};
-
-;// CONCATENATED MODULE: ./src/utils/matter.ts
-
-const parseMatter = (content) => {
-    const matterData = gray_matter_default()(content);
-    return matterData;
-};
-
-;// CONCATENATED MODULE: ./src/posts/content.ts
-
-
-
-const parsePostFileContent = (files) => {
-    return files
-        .map(file => {
-        const fileContent = readFile(file.fileName);
-        const fileMatter = parseMatter(fileContent);
-        if (!fileMatter || !fileMatter.data || !Object.keys(fileMatter.data).length) {
-            return null;
-        }
-        return {
-            fileData: file,
-            matterData: fileMatter,
-        };
-    })
-        .filter(data => data !== null);
-};
-const stringifyPostContent = (body, matterData) => {
-    // @ts-expect-error - lineWidth is not in the types
-    return gray_matter_default().stringify(body, matterData, { lineWidth: -1 });
-};
-
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.2/node_modules/ky/distribution/errors/HTTPError.js
 class HTTPError extends Error {
     response;
@@ -38049,7 +37876,79 @@ const ky = createInstance();
 
 
 //# sourceMappingURL=index.js.map
+;// CONCATENATED MODULE: ./src/hosting/types.ts
+var HostingType;
+(function (HostingType) {
+    HostingType["DEV_TO"] = "devTo";
+})(HostingType || (HostingType = {}));
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/gray-matter@4.0.3/node_modules/gray-matter/index.js
+var gray_matter = __nccwpck_require__(2796);
+var gray_matter_default = /*#__PURE__*/__nccwpck_require__.n(gray_matter);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(9896);
+var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
+;// CONCATENATED MODULE: ./src/utils/const.ts
+const supportedFileExtensions = ['.md', '.mdx'];
+const GIT_ADD_FILE_STATUS = 'A';
+const GIT_MODIFIED_FILE_STATUS = 'M';
+const FILE_ENCODING = 'utf-8';
+const ACTION_INPUT_KEY_TOKEN = 'token';
+const ACTION_INPUT_KEY_INCLUDE_FOLDERS = 'includeFolders';
+const ACTION_INPUT_KEY_COMMIT_MESSAGE_TEMPLATE = 'commitMessage';
+const ACTION_INPUT_KEY_PUBLISH_TO = 'publishTo';
+const ACTION_INPUT_KEY_API_KEY = 'ApiKey';
+
+;// CONCATENATED MODULE: ./src/utils/file.ts
+
+
+const modifyFile = (filePath, data) => {
+    external_fs_default().writeFileSync(filePath, data, FILE_ENCODING);
+};
+const readFile = (filePath) => {
+    return external_fs_default().readFileSync(filePath, FILE_ENCODING);
+};
+const filterFilesByIncludeFolders = (files, includeFolders) => {
+    if (!includeFolders.length) {
+        return files;
+    }
+    return files.filter(data => includeFolders.some(folder => data.fileName.includes(folder)));
+};
+
+;// CONCATENATED MODULE: ./src/utils/matter.ts
+
+const parseMatter = (content) => {
+    const matterData = gray_matter_default()(content);
+    return matterData;
+};
+
+;// CONCATENATED MODULE: ./src/posts/content.ts
+
+
+
+const parsePostFileContent = (files) => {
+    return files
+        .map(file => {
+        const fileContent = readFile(file.fileName);
+        const fileMatter = parseMatter(fileContent);
+        if (!fileMatter || !fileMatter.data || !Object.keys(fileMatter.data).length) {
+            return null;
+        }
+        return {
+            fileData: file,
+            matterData: fileMatter,
+        };
+    })
+        .filter(data => data !== null);
+};
+const stringifyPostContent = (body, matterData) => {
+    // @ts-expect-error - lineWidth is not in the types
+    return gray_matter_default().stringify(body, matterData, { lineWidth: -1 });
+};
+
 ;// CONCATENATED MODULE: ./src/hosting/devto.ts
+
+
 
 class DevToSDK {
     client;
@@ -38069,9 +37968,29 @@ class DevToSDK {
             },
         });
     }
-    async createPost(post) {
-        return this.client
-            .post('articles', { json: post })
+    createRequest(matterData) {
+        const requestMatterData = {
+            title: matterData.data.title,
+            description: matterData.data.description,
+            published: matterData.data.published,
+            tags: matterData.data.tags,
+            date: matterData.data[`published_${HostingType.DEV_TO}_at`],
+            series: matterData.data.series,
+            canonical_url: matterData.data.canonical_url,
+            cover_image: matterData.data.cover_image,
+        };
+        const cleanedMatterData = Object.entries(requestMatterData).reduce((a, [k, v]) => (v === null || v === undefined ? a : ((a[k] = v), a)), {});
+        const contentToPublish = stringifyPostContent(matterData.content, cleanedMatterData);
+        return {
+            article: {
+                body_markdown: contentToPublish,
+            },
+        };
+    }
+    async createPost(matterData) {
+        const postToPublish = this.createRequest(matterData);
+        const response = await this.client
+            .post('articles', { json: postToPublish })
             .json()
             .catch(async (error) => {
             if (error instanceof HTTPError) {
@@ -38081,10 +38000,15 @@ class DevToSDK {
                 throw new Error(error.message);
             }
         });
+        return {
+            [HostingType.DEV_TO]: response.id,
+            [`published_${HostingType.DEV_TO}_at`]: response.published_at,
+        };
     }
-    async updatePost(id, post) {
-        return this.client
-            .put(`articles/${id}`, { json: post })
+    async updatePost(matterData) {
+        const postToPublish = this.createRequest(matterData);
+        const response = await this.client
+            .put(`articles/${matterData.data[HostingType.DEV_TO]}`, { json: postToPublish })
             .json()
             .catch(async (error) => {
             if (error instanceof HTTPError) {
@@ -38094,16 +38018,14 @@ class DevToSDK {
                 throw new Error(error.message);
             }
         });
+        return {
+            [HostingType.DEV_TO]: response.id,
+            [`published_${HostingType.DEV_TO}_at`]: response.published_at,
+            [`updated_${HostingType.DEV_TO}_at`]: response.edited_at,
+        };
     }
 }
 const createDevToSDK = (apiKey) => new DevToSDK(apiKey);
-
-;// CONCATENATED MODULE: ./src/hosting/types.ts
-var HostingType;
-(function (HostingType) {
-    HostingType["DEV_TO"] = "devTo";
-    HostingType["MEDIUM"] = "medium";
-})(HostingType || (HostingType = {}));
 
 ;// CONCATENATED MODULE: ./src/hosting/index.ts
 
@@ -38125,52 +38047,143 @@ class HostingAPI {
         }
         return initializer(apiKey);
     }
-    async createPost(post) {
-        return this.hosting.createPost(post);
+    async createPost(matterData) {
+        return this.hosting.createPost(matterData);
     }
-    async updatePost(id, post) {
-        return this.hosting.updatePost(id, post);
+    async updatePost(matterData) {
+        return this.hosting.updatePost(matterData);
     }
 }
 const createHostingAPI = (name, apiKey) => new HostingAPI(name, apiKey);
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@1.10.1/node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(7627);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+exec@1.1.1/node_modules/@actions/exec/lib/exec.js
+var exec = __nccwpck_require__(9365);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@6.0.0/node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(3802);
+;// CONCATENATED MODULE: ./src/git/index.ts
+
+
+
+
+
+const setBuildFailed = core.setFailed;
+const getBuildInput = core.getInput;
+const buildContext = (/* unused pure expression or super */ null && (context));
+const logBuildInfo = core.info;
+const logBuildDebug = (message) => {
+    if ((0,core.isDebug)()) {
+        (0,core.debug)(message);
+    }
+};
+// eslint-disable-next-line no-console
+const logBuildError = console.error;
+const getGitInstance = () => {
+    const GITHUB_TOKEN = getBuildInput(ACTION_INPUT_KEY_TOKEN);
+    if (!GITHUB_TOKEN) {
+        (0,core.setFailed)('Error: GITHUB_TOKEN is a required input.');
+    }
+    return (0,github.getOctokit)(GITHUB_TOKEN);
+};
+const gitSetConfig = async () => {
+    logBuildInfo('Setting git config...');
+    const user = {
+        name: 'github-actions[bot]',
+        email: '41898282+github-actions[bot]@users.noreply.github.com',
+    };
+    await (0,exec.exec)('git', ['config', 'user.name', user.name]);
+    await (0,exec.exec)('git', ['config', 'user.email', user.email]);
+};
+const gitCommitPush = async ({ branch, filePath, message }) => {
+    logBuildInfo('Committing and pushing...');
+    await gitCommit({ filePath, message });
+    await gitPush({ branch });
+};
+const gitCommit = async ({ filePath, message }) => {
+    logBuildInfo('Committing...');
+    await (0,exec.exec)('git', ['add', filePath]);
+    await (0,exec.exec)('git', ['commit', '-m', message]);
+};
+const gitPush = async ({ branch }) => {
+    logBuildInfo('Pushing...');
+    await (0,exec.exec)('git', ['push', 'origin', branch]);
+};
+const gitCheckout = async () => {
+    logBuildInfo('Checking out...');
+    const branch = github.context.ref.replace('refs/heads/', '');
+    await (0,exec.exec)('git', ['fetch', 'origin', branch]);
+    await (0,exec.exec)('git', ['checkout', branch]);
+    return branch;
+};
+const authorizeUser = async () => {
+    const { rest: { repos }, } = getGitInstance();
+    const { data: user } = await repos.getCollaboratorPermissionLevel({
+        ...github.context.repo,
+        username: github.context.actor,
+    });
+    logBuildInfo(`User permission: ${user.permission}`);
+    return user.permission === 'admin' || user.permission === 'write';
+};
+const getCommitMessage = (template) => {
+    const commitMessageTemplate = getBuildInput(template);
+    return commitMessageTemplate;
+};
+const parseGitStatusOutput = (output) => {
+    const lines = output.trim().split('\n');
+    return lines.map(line => {
+        const parts = line.trim().split(/\s+/);
+        const fileStatus = parts[0].trim();
+        const fileName = parts.slice(1).join(' ').trim();
+        return { fileStatus, fileName };
+    });
+};
+const getFilesBetweenCommits = async (fromCommitHash, toCommitHash) => {
+    let files = '';
+    await (0,exec.exec)('git', ['diff', '--name-status', fromCommitHash, toCommitHash], {
+        listeners: {
+            stdout: (data) => {
+                files += data.toString();
+            },
+        },
+    });
+    return parseGitStatusOutput(files);
+};
+const filterFilesByGitStatus = (files, status) => {
+    // Filter to get only the files modified and added
+    return files
+        .filter(file => status.includes(file.fileStatus))
+        .filter(file => {
+        return supportedFileExtensions.some(ext => file.fileName.endsWith(ext));
+    });
+};
+const getFilesToBePublished = async (includeFolders) => {
+    const filesSinceLastCommit = await getFilesBetweenCommits(github.context.payload.before, github.context.payload.after);
+    const modifiedOrAddedFiles = filterFilesByGitStatus(filesSinceLastCommit, [
+        GIT_ADD_FILE_STATUS,
+        GIT_MODIFIED_FILE_STATUS,
+    ]);
+    return filterFilesByIncludeFolders(modifiedOrAddedFiles, includeFolders);
+};
 
 ;// CONCATENATED MODULE: ./src/posts/process.ts
 
 
 
-
 const publishOrUpdatedPost = async (hostingSDK, hostingKeyName, matterData) => {
-    const contentToPublish = stringifyPostContent(matterData.content, matterData.data);
     let response = null;
     if (matterData.data[`${hostingKeyName}`] === undefined || matterData.data[`${hostingKeyName}`] === null) {
-        response = await hostingSDK.createPost({
-            article: {
-                body_markdown: contentToPublish,
-            },
-        });
+        response = await hostingSDK.createPost(matterData);
     }
     else if (matterData.data[`${hostingKeyName}`] !== false) {
-        response = await hostingSDK.updatePost(matterData.data[`${hostingKeyName}`], {
-            article: {
-                body_markdown: contentToPublish,
-            },
-        });
+        response = await hostingSDK.updatePost(matterData);
     }
     else {
         logBuildInfo(`Post is not published to ${hostingKeyName}`);
     }
     return response;
 };
-const processPostsData = async (filesData) => {
-    const publishTo = getBuildInput('publishTo');
-    if (!publishTo || publishTo.trim().length === 0) {
-        throw new Error('No hosting platform specified to publish the post');
-    }
-    const publishHostsSDK = new Map();
-    publishTo.split(',').forEach(host => {
-        const devToApiKey = getBuildInput(`${host}ApiKey`);
-        publishHostsSDK.set(host, createHostingAPI(host, devToApiKey));
-    });
+const processPostsData = async (filesData, publishHostsSDK) => {
     const filesUpdated = new Set();
     const processedData = filesData.map(async (data) => {
         const { matterData, fileData } = data;
@@ -38178,11 +38191,9 @@ const processPostsData = async (filesData) => {
             for (const [host, hostingSDK] of publishHostsSDK.entries()) {
                 const response = await publishOrUpdatedPost(hostingSDK, host, matterData);
                 if (response !== null) {
-                    const { id, published_at } = response;
                     const publishedMatterData = {
                         ...matterData.data,
-                        [host]: id,
-                        published_at: published_at,
+                        ...response,
                     };
                     const updatePublishedContent = stringifyPostContent(matterData.content, publishedMatterData);
                     modifyFile(fileData.fileName, updatePublishedContent);
@@ -38204,17 +38215,29 @@ const processPostsData = async (filesData) => {
 
 
 
-const main = async () => {
-    const isAuthorized = await authorizeUser();
-    if (!isAuthorized) {
-        throw new Error('You have no permission in this repository to use this action.');
-    }
-    const filesToPublish = await getFilesToBePublished();
+
+const getFilesToBeProcessed = async () => {
+    const includeFolders = getBuildInput(ACTION_INPUT_KEY_INCLUDE_FOLDERS);
+    const filesToPublish = await getFilesToBePublished(includeFolders.split(/\r|\n/));
     const parsedPostFilesData = parsePostFileContent(filesToPublish);
     if (!parsedPostFilesData || parsedPostFilesData.length === 0) {
         return null;
     }
-    const modifiedFiles = await processPostsData(parsedPostFilesData);
+    return parsedPostFilesData;
+};
+const getPublishHostSDKs = () => {
+    const publishTo = getBuildInput(ACTION_INPUT_KEY_PUBLISH_TO);
+    if (!publishTo || publishTo.trim().length === 0) {
+        return null;
+    }
+    const publishHostSDKs = new Map();
+    publishTo.split(',').forEach(host => {
+        const devToApiKey = getBuildInput(`${host}${ACTION_INPUT_KEY_API_KEY}`);
+        publishHostSDKs.set(host, createHostingAPI(host, devToApiKey));
+    });
+    return publishHostSDKs;
+};
+const commitPushModifiedFiles = async (modifiedFiles) => {
     await gitSetConfig();
     const branch = await gitCheckout();
     const commitMessage = getCommitMessage(ACTION_INPUT_KEY_COMMIT_MESSAGE_TEMPLATE);
@@ -38225,6 +38248,24 @@ const main = async () => {
         });
     }
     await gitPush({ branch });
+};
+const main = async () => {
+    const isAuthorized = await authorizeUser();
+    if (!isAuthorized) {
+        throw new Error('You have no permission in this repository to use this action.');
+    }
+    const filesToBeProcessed = await getFilesToBeProcessed();
+    if (!filesToBeProcessed) {
+        logBuildInfo('No post files found to process.');
+        return null;
+    }
+    const publishHostsSDK = getPublishHostSDKs();
+    if (!publishHostsSDK || publishHostsSDK.size === 0) {
+        logBuildInfo('No hosting platforms found to publish.');
+        return null;
+    }
+    const modifiedFiles = await processPostsData(filesToBeProcessed, publishHostsSDK);
+    await commitPushModifiedFiles(modifiedFiles);
     logBuildInfo('Build completed successfully.');
 };
 main().catch(setBuildFailed);

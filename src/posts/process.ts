@@ -2,28 +2,16 @@ import { stringifyPostContent } from './content';
 import { ContentFileData } from './types';
 
 import { modifyFile } from '@/pbp/utils/file';
-import { createHostingAPI } from '@/pbp/hosting';
 import { HostingAPIModel } from '@/pbp/hosting/types';
-import { getBuildInput, logBuildDebug, logBuildError, logBuildInfo } from '@/pbp/git';
+import { logBuildDebug, logBuildError, logBuildInfo } from '@/pbp/git';
 import { MatterData } from '@/pbp/utils/matter';
 
 const publishOrUpdatedPost = async (hostingSDK: HostingAPIModel, hostingKeyName: string, matterData: MatterData) => {
-  const contentToPublish = stringifyPostContent(matterData.content, matterData.data);
-
   let response = null;
-
   if (matterData.data[`${hostingKeyName}`] === undefined || matterData.data[`${hostingKeyName}`] === null) {
-    response = await hostingSDK.createPost({
-      article: {
-        body_markdown: contentToPublish,
-      },
-    });
+    response = await hostingSDK.createPost(matterData);
   } else if (matterData.data[`${hostingKeyName}`] !== false) {
-    response = await hostingSDK.updatePost(matterData.data[`${hostingKeyName}`], {
-      article: {
-        body_markdown: contentToPublish,
-      },
-    });
+    response = await hostingSDK.updatePost(matterData);
   } else {
     logBuildInfo(`Post is not published to ${hostingKeyName}`);
   }
@@ -31,18 +19,7 @@ const publishOrUpdatedPost = async (hostingSDK: HostingAPIModel, hostingKeyName:
   return response;
 };
 
-export const processPostsData = async (filesData: ContentFileData[]) => {
-  const publishTo = getBuildInput('publishTo');
-  if (!publishTo || publishTo.trim().length === 0) {
-    throw new Error('No hosting platform specified to publish the post');
-  }
-
-  const publishHostsSDK = new Map<string, HostingAPIModel>();
-  publishTo.split(',').forEach(host => {
-    const devToApiKey = getBuildInput(`${host}ApiKey`);
-    publishHostsSDK.set(host, createHostingAPI(host, devToApiKey));
-  });
-
+export const processPostsData = async (filesData: ContentFileData[], publishHostsSDK: Map<string, HostingAPIModel>) => {
   const filesUpdated = new Set<string>();
 
   const processedData = filesData.map(async data => {
@@ -53,11 +30,9 @@ export const processPostsData = async (filesData: ContentFileData[]) => {
         const response = await publishOrUpdatedPost(hostingSDK, host, matterData);
 
         if (response !== null) {
-          const { id, published_at } = response;
           const publishedMatterData: MatterData['data'] = {
             ...matterData.data,
-            [host]: id,
-            published_at: published_at,
+            ...response,
           };
 
           const updatePublishedContent = stringifyPostContent(matterData.content, publishedMatterData);

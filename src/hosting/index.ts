@@ -1,5 +1,7 @@
 import { createDevToSDK } from './devto';
-import { CreatePost, HostingAPIModel, HostingType, UpdatePost } from './types';
+import { HostingAPIModel, HostingType } from './types';
+
+import { MatterData } from '@/pbp/utils/matter';
 
 const hostingInitializers: Record<string, (apiKey: string) => HostingAPIModel> = {
   [HostingType.DEV_TO]: createDevToSDK,
@@ -23,12 +25,12 @@ export class HostingAPI {
     return initializer(apiKey);
   }
 
-  async createPost(post: CreatePost) {
-    return this.hosting.createPost(post);
+  async createPost(matterData: MatterData) {
+    return this.hosting.createPost(matterData);
   }
 
-  async updatePost(id: number, post: UpdatePost) {
-    return this.hosting.updatePost(id, post);
+  async updatePost(matterData: MatterData) {
+    return this.hosting.updatePost(matterData);
   }
 }
 

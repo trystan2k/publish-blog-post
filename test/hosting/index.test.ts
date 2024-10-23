@@ -26,13 +26,31 @@ describe('Hosting', () => {
 
     test('should create a post', async () => {
       const hosting = createHostingAPI(name, 'apiKey');
-      const response = await hosting.createPost({ article: { title: 'Test Title', body_markdown: 'Test Body' } });
+      const response = await hosting.createPost({
+        data: { title: 'Test Title' },
+        content: 'Test Body',
+        orig: '',
+        language: '',
+        matter: '',
+        stringify: function (lang: string): string {
+          throw new Error('Function not implemented.');
+        },
+      });
       expect(response).toBe('post response body');
     });
 
     test('should update a post', async () => {
       const hosting = createHostingAPI(name, 'apiKey');
-      const response = await hosting.updatePost(1, { article: { title: 'Test Title', body_markdown: 'Test Body' } });
+      const response = await hosting.updatePost({
+        data: { title: 'Test Title', devTo: 1 },
+        content: 'Test Body',
+        orig: '',
+        language: '',
+        matter: '',
+        stringify: function (lang: string): string {
+          throw new Error('Function not implemented.');
+        },
+      });
       expect(response).toBe('update response body');
     });
   });

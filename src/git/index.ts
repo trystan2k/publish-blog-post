@@ -6,11 +6,11 @@ import { FileStatusData } from './types';
 
 import {
   supportedFileExtensions,
-  ACTION_INPUT_KEY_INCLUDE_FOLDERS,
   GIT_ADD_FILE_STATUS,
   GIT_MODIFIED_FILE_STATUS,
   ACTION_INPUT_KEY_TOKEN,
 } from '@/pbp/utils/const';
+import { filterFilesByIncludeFolders } from '@/pbp/utils/file';
 
 export const setBuildFailed = setFailed;
 
@@ -140,17 +140,7 @@ const filterFilesByGitStatus = (files: FileStatusData[], status: string[]) => {
     });
 };
 
-const filterFilesByIncludeFolders = (files: FileStatusData[]) => {
-  // Check for include folders
-  const includeFolders = getBuildInput(ACTION_INPUT_KEY_INCLUDE_FOLDERS);
-  if (!includeFolders || includeFolders.trim().length === 0) {
-    return files;
-  }
-
-  return files.filter(data => includeFolders.split(/\r|\n/).some(folder => data.fileName.includes(folder)));
-};
-
-export const getFilesToBePublished = async () => {
+export const getFilesToBePublished = async (includeFolders: string[]) => {
   const filesSinceLastCommit = await getFilesBetweenCommits(context.payload.before, context.payload.after);
 
   const modifiedOrAddedFiles = filterFilesByGitStatus(filesSinceLastCommit, [
@@ -158,5 +148,5 @@ export const getFilesToBePublished = async () => {
     GIT_MODIFIED_FILE_STATUS,
   ]);
 
-  return filterFilesByIncludeFolders(modifiedOrAddedFiles);
+  return filterFilesByIncludeFolders(modifiedOrAddedFiles, includeFolders);
 };
