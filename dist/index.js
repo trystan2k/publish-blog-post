@@ -38072,13 +38072,13 @@ const setBuildFailed = core.setFailed;
 const getBuildInput = core.getInput;
 const buildContext = (/* unused pure expression or super */ null && (context));
 const logBuildInfo = core.info;
+const logBuildWarn = (/* unused pure expression or super */ null && (warning));
+const logBuildError = core.error;
 const logBuildDebug = (message) => {
     if ((0,core.isDebug)()) {
         (0,core.debug)(message);
     }
 };
-// eslint-disable-next-line no-console
-const logBuildError = console.error;
 const getGitInstance = () => {
     const GITHUB_TOKEN = getBuildInput(ACTION_INPUT_KEY_TOKEN);
     if (!GITHUB_TOKEN) {
