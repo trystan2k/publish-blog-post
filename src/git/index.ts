@@ -1,4 +1,4 @@
-import { setFailed, getInput, info, debug, isDebug } from '@actions/core';
+import { setFailed, getInput, info, debug, isDebug, warning, error } from '@actions/core';
 import { exec } from '@actions/exec';
 import { context, getOctokit } from '@actions/github';
 
@@ -20,14 +20,15 @@ export const buildContext = context;
 
 export const logBuildInfo = info;
 
+export const logBuildWarn = warning;
+
+export const logBuildError = error;
+
 export const logBuildDebug = (message: string) => {
   if (isDebug()) {
     debug(message);
   }
 };
-
-// eslint-disable-next-line no-console
-export const logBuildError = console.error;
 
 export const getGitInstance = () => {
   const GITHUB_TOKEN = getBuildInput(ACTION_INPUT_KEY_TOKEN);
