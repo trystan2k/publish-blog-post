@@ -1,0 +1,11 @@
+_extends: github-settings
+
+from_owner:
+  - trystan2k
+
+required_labels:
+  - approved
+
+apply_labels: []
+
+blacklisted_labels: []

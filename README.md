@@ -28,6 +28,8 @@
 
 The Publish Blog Post action is a GitHub Action that automates the process of publishing blog posts to various platforms, such as Dev.to and Medium. The action reads the markdown content from a specified file and based on its front matter data publishes or updates the post to the selected platform using the respective API.
 
+The action get the list of files to process (new or updated) by comparing the current commit with the previous commit. It then reads the front matter of the markdown file to extract metadata such as title, description, tags, etc. The action then publishes or updates the post to the selected platform using the respective API.
+
 ---
 
 ## 👾 Features
@@ -52,7 +54,7 @@ The action provides the following features:
 
 ### Dependencies
 
-***KY***: Tiny & elegant JavaScript HTTP client based on the Fetch API ussed to make HTTP requests to the Dev.to API.
+**KY**: Tiny & elegant JavaScript HTTP client based on the Fetch API ussed to make HTTP requests to the Dev.to API.
 **gray-matter**: Used to parse the front matter of the markdown file to extract metadata such as title, description, tags, etc.
 
 ---
@@ -227,9 +229,5 @@ This project is protected under the [MIT](https://choosealicense.com/licenses/mi
 ### Dev.to API
 
 - [Dev.to API](https://docs.dev.to/api/)
-
-### Medium API
-
-- [Medium API]()
 
 ---
