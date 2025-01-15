@@ -4,8 +4,6 @@ updates:
   directory: "/"
   schedule:
     interval: "weekly"
-  allow:
-    - dependency-type: "all"
   versioning-strategy: "increase"
   reviewers:
     - "trystan2k"
@@ -13,6 +11,7 @@ updates:
     - "trystan2k"
   labels:
     - "dependabot"
+    - "dependencies"
   commit-message:
     prefix: "chore"
     include: "scope"
