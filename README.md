@@ -230,8 +230,4 @@ This project is protected under the [MIT](https://choosealicense.com/licenses/mi
 
 - [Dev.to API](https://docs.dev.to/api/)
 
-### Medium API
-
-- [Medium API]()
-
 ---
