@@ -1,0 +1,17 @@
+version: 2
+updates:
+- package-ecosystem: "npm"
+  directory: "/"
+  schedule:
+    interval: "weekly"
+  versioning-strategy: "increase"
+  reviewers:
+    - "trystan2k"
+  assignees:
+    - "trystan2k"
+  labels:
+    - "dependabot"
+    - "dependencies"
+  commit-message:
+    prefix: "chore"
+    include: "scope"
