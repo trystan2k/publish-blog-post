@@ -3,7 +3,14 @@ name: Continuous Integration
 env:
   HUSKY: 0
 
-on: [push]
+permissions:
+  pull-requests: write  
+
+on: 
+  pull_request:
+  push:
+    branches:
+      - main
 
 jobs:    
   ci:
@@ -52,6 +59,35 @@ jobs:
       - name: Test
         id: pnpm-ci-test-main
         run: pnpm test:all
+
+      - name: Comment Test Results
+        id: coverage
+        run: |
+          if [ ! -f coverage/coverage-summary.json ]; then
+            echo "Coverage report not found!" && exit 1
+          fi
+          TOTAL_COVERAGE=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          STATEMENTS_COVERAGE=$(jq '.total.statements.pct' coverage/coverage-summary.json)
+          BRANCHES_COVERAGE=$(jq '.total.branches.pct' coverage/coverage-summary.json)
+          FUNCTIONS_COVERAGE=$(jq '.total.functions.pct' coverage/coverage-summary.json)
+          
+          echo "TOTAL_COVERAGE=$TOTAL_COVERAGE" >> $GITHUB_OUTPUT
+          echo "STATEMENTS_COVERAGE=$STATEMENTS_COVERAGE" >> $GITHUB_OUTPUT
+          echo "BRANCHES_COVERAGE=$BRANCHES_COVERAGE" >> $GITHUB_OUTPUT
+          echo "FUNCTIONS_COVERAGE=$FUNCTIONS_COVERAGE" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: vitest-coverage
+          message: |
+            ## 🛡️ Vitest Coverage Report
+            | Metric       | Coverage |
+            |-------------|----------|
+            | 📜 Statements | **${{ steps.coverage.outputs.STATEMENTS_COVERAGE }}%** |
+            | 🌿 Branches  | **${{ steps.coverage.outputs.BRANCHES_COVERAGE }}%** |
+            | 🔢 Functions  | **${{ steps.coverage.outputs.FUNCTIONS_COVERAGE }}%** |
+            | 🏆 Lines      | **${{ steps.coverage.outputs.TOTAL_COVERAGE }}%** |
 
       - name: Build
         id: pnpm-build

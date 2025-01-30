@@ -20,7 +20,7 @@ export default defineConfig({
     include: ['**/?(*.)+(spec|test).[tj]s?(x)'],
     coverage: {
       enabled: true,
-      reporter: ['text', 'html'],
+      reporter: ['text', 'html', 'json-summary'],
       exclude: [...configDefaults.coverage.exclude!, '**/{commitlint,lint-staged}.config.*'],
       thresholds: {
         statements: 80,
