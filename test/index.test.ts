@@ -20,7 +20,7 @@ vi.mock('@/pbp/posts/content');
 describe('main function', () => {
   test('should post an error if user is not authorized', async () => {
     vi.mocked(authorizeUser).mockResolvedValue(false);
-    expect(async () => await main()).rejects.toThrowError(
+    await expect(async () => await main()).rejects.toThrowError(
       'You have no permission in this repository to use this action.',
     );
   });

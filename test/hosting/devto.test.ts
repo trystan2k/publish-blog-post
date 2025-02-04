@@ -102,7 +102,7 @@ describe('DevToSDK', () => {
       });
 
       sdk = createDevToSDK(apiKey);
-      expect(async () => await sdk.createPost(matterData)).rejects.toThrowError(
+      await expect(async () => await sdk.createPost(matterData)).rejects.toThrowError(
         'Error publishing post \n Status: 422 \n Reason: HTTP Error 422',
       );
     });
@@ -128,7 +128,9 @@ describe('DevToSDK', () => {
       });
 
       sdk = createDevToSDK(apiKey);
-      expect(async () => await sdk.createPost(matterData)).rejects.toThrowError('Error converting response to JSON');
+      await expect(async () => await sdk.createPost(matterData)).rejects.toThrowError(
+        'Error converting response to JSON',
+      );
     });
   });
 
@@ -216,7 +218,7 @@ describe('DevToSDK', () => {
       });
 
       sdk = createDevToSDK(apiKey);
-      expect(async () => await sdk.updatePost(matterData)).rejects.toThrowError(
+      await expect(async () => await sdk.updatePost(matterData)).rejects.toThrowError(
         'Error updating post \n Status: 422 \n Reason: HTTP Error 422',
       );
     });
@@ -243,7 +245,9 @@ describe('DevToSDK', () => {
       });
 
       sdk = createDevToSDK(apiKey);
-      expect(async () => await sdk.updatePost(matterData)).rejects.toThrowError('Error converting response to JSON');
+      await expect(async () => await sdk.updatePost(matterData)).rejects.toThrowError(
+        'Error converting response to JSON',
+      );
     });
   });
 });
