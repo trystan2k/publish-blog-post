@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.1.0](https://github.com/trystan2k/publish-blog-post/compare/v1.0.0...v1.1.0) (2025-02-05)
+
 ## 1.0.0 (2024-10-27)
 
 
