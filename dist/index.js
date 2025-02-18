@@ -36818,7 +36818,7 @@ __nccwpck_require__.d(__webpack_exports__, {
   A: () => (/* binding */ src)
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.4/node_modules/ky/distribution/errors/HTTPError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/errors/HTTPError.js
 class HTTPError extends Error {
     response;
     request;
@@ -36836,7 +36836,7 @@ class HTTPError extends Error {
     }
 }
 //# sourceMappingURL=HTTPError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.4/node_modules/ky/distribution/errors/TimeoutError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/errors/TimeoutError.js
 class TimeoutError extends Error {
     request;
     constructor(request) {
@@ -36846,11 +36846,11 @@ class TimeoutError extends Error {
     }
 }
 //# sourceMappingURL=TimeoutError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.4/node_modules/ky/distribution/utils/is.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/is.js
 // eslint-disable-next-line @typescript-eslint/ban-types
 const isObject = (value) => value !== null && typeof value === 'object';
 //# sourceMappingURL=is.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.4/node_modules/ky/distribution/utils/merge.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/merge.js
 
 const validateAndMerge = (...sources) => {
     for (const source of sources) {
@@ -36917,7 +36917,7 @@ const deepMerge = (...sources) => {
     return returnValue;
 };
 //# sourceMappingURL=merge.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.4/node_modules/ky/distribution/core/constants.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/core/constants.js
 const supportsRequestStreams = (() => {
     let duplexAccessed = false;
     let hasContentType = false;
@@ -36993,7 +36993,7 @@ const requestOptionsRegistry = {
     priority: true,
 };
 //# sourceMappingURL=constants.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.4/node_modules/ky/distribution/utils/normalize.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/normalize.js
 
 const normalizeRequestMethod = (input) => requestMethods.includes(input) ? input.toUpperCase() : input;
 const retryMethods = ['get', 'put', 'head', 'delete', 'options', 'trace'];
@@ -37027,7 +37027,7 @@ const normalizeRetryOptions = (retry = {}) => {
     };
 };
 //# sourceMappingURL=normalize.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.4/node_modules/ky/distribution/utils/timeout.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/timeout.js
 
 // `Promise.race()` workaround (#91)
 async function timeout(request, init, abortController, options) {
@@ -37048,7 +37048,7 @@ async function timeout(request, init, abortController, options) {
     });
 }
 //# sourceMappingURL=timeout.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.4/node_modules/ky/distribution/utils/delay.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/delay.js
 // https://github.com/sindresorhus/delay/tree/ab98ae8dfcb38e1593286c94d934e70d14a4e111
 async function delay(ms, { signal }) {
     return new Promise((resolve, reject) => {
@@ -37067,7 +37067,7 @@ async function delay(ms, { signal }) {
     });
 }
 //# sourceMappingURL=delay.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.4/node_modules/ky/distribution/utils/options.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/options.js
 
 const findUnknownOptions = (request, options) => {
     const unknownOptions = {};
@@ -37079,7 +37079,7 @@ const findUnknownOptions = (request, options) => {
     return unknownOptions;
 };
 //# sourceMappingURL=options.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.4/node_modules/ky/distribution/core/Ky.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/core/Ky.js
 
 
 
@@ -37169,7 +37169,7 @@ class Ky {
                 beforeError: [],
                 afterResponse: [],
             }, options.hooks),
-            method: normalizeRequestMethod(options.method ?? this._input.method),
+            method: normalizeRequestMethod(options.method ?? this._input.method ?? 'GET'),
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             prefixUrl: String(options.prefixUrl || ''),
             retry: normalizeRetryOptions(options.retry),
@@ -37355,7 +37355,7 @@ class Ky {
     }
 }
 //# sourceMappingURL=Ky.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.4/node_modules/ky/distribution/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/index.js
 /*! MIT License © Sindre Sorhus */
 
 
