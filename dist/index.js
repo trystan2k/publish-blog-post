@@ -36818,7 +36818,7 @@ __nccwpck_require__.d(__webpack_exports__, {
   A: () => (/* binding */ src)
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/errors/HTTPError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/errors/HTTPError.js
 class HTTPError extends Error {
     response;
     request;
@@ -36836,7 +36836,7 @@ class HTTPError extends Error {
     }
 }
 //# sourceMappingURL=HTTPError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/errors/TimeoutError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/errors/TimeoutError.js
 class TimeoutError extends Error {
     request;
     constructor(request) {
@@ -36846,11 +36846,212 @@ class TimeoutError extends Error {
     }
 }
 //# sourceMappingURL=TimeoutError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/is.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/core/constants.js
+const supportsRequestStreams = (() => {
+    let duplexAccessed = false;
+    let hasContentType = false;
+    const supportsReadableStream = typeof globalThis.ReadableStream === 'function';
+    const supportsRequest = typeof globalThis.Request === 'function';
+    if (supportsReadableStream && supportsRequest) {
+        try {
+            hasContentType = new globalThis.Request('https://empty.invalid', {
+                body: new globalThis.ReadableStream(),
+                method: 'POST',
+                // @ts-expect-error - Types are outdated.
+                get duplex() {
+                    duplexAccessed = true;
+                    return 'half';
+                },
+            }).headers.has('Content-Type');
+        }
+        catch (error) {
+            // QQBrowser on iOS throws "unsupported BodyInit type" error (see issue #581)
+            if (error instanceof Error && error.message === 'unsupported BodyInit type') {
+                return false;
+            }
+            throw error;
+        }
+    }
+    return duplexAccessed && !hasContentType;
+})();
+const supportsAbortController = typeof globalThis.AbortController === 'function';
+const supportsResponseStreams = typeof globalThis.ReadableStream === 'function';
+const supportsFormData = typeof globalThis.FormData === 'function';
+const requestMethods = ['get', 'post', 'put', 'patch', 'head', 'delete'];
+const validate = () => undefined;
+validate();
+const responseTypes = {
+    json: 'application/json',
+    text: 'text/*',
+    formData: 'multipart/form-data',
+    arrayBuffer: '*/*',
+    blob: '*/*',
+};
+// The maximum value of a 32bit int (see issue #117)
+const maxSafeTimeout = 2_147_483_647;
+// Size in bytes of a typical form boundary, used to help estimate upload size
+const usualFormBoundarySize = new TextEncoder().encode('------WebKitFormBoundaryaxpyiPgbbPti10Rw').length;
+const stop = Symbol('stop');
+const kyOptionKeys = {
+    json: true,
+    parseJson: true,
+    stringifyJson: true,
+    searchParams: true,
+    prefixUrl: true,
+    retry: true,
+    timeout: true,
+    hooks: true,
+    throwHttpErrors: true,
+    onDownloadProgress: true,
+    onUploadProgress: true,
+    fetch: true,
+};
+const requestOptionsRegistry = {
+    method: true,
+    headers: true,
+    body: true,
+    mode: true,
+    credentials: true,
+    cache: true,
+    redirect: true,
+    referrer: true,
+    referrerPolicy: true,
+    integrity: true,
+    keepalive: true,
+    signal: true,
+    window: true,
+    dispatcher: true,
+    duplex: true,
+    priority: true,
+};
+//# sourceMappingURL=constants.js.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/utils/body.js
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+const getBodySize = (body) => {
+    if (!body) {
+        return 0;
+    }
+    if (body instanceof FormData) {
+        // This is an approximation, as FormData size calculation is not straightforward
+        let size = 0;
+        for (const [key, value] of body) {
+            size += usualFormBoundarySize;
+            size += new TextEncoder().encode(`Content-Disposition: form-data; name="${key}"`).length;
+            size += typeof value === 'string'
+                ? new TextEncoder().encode(value).length
+                : value.size;
+        }
+        return size;
+    }
+    if (body instanceof Blob) {
+        return body.size;
+    }
+    if (body instanceof ArrayBuffer) {
+        return body.byteLength;
+    }
+    if (typeof body === 'string') {
+        return new TextEncoder().encode(body).length;
+    }
+    if (body instanceof URLSearchParams) {
+        return new TextEncoder().encode(body.toString()).length;
+    }
+    if ('byteLength' in body) {
+        return (body).byteLength;
+    }
+    if (typeof body === 'object' && body !== null) {
+        try {
+            const jsonString = JSON.stringify(body);
+            return new TextEncoder().encode(jsonString).length;
+        }
+        catch {
+            return 0;
+        }
+    }
+    return 0; // Default case, unable to determine size
+};
+const streamResponse = (response, onDownloadProgress) => {
+    const totalBytes = Number(response.headers.get('content-length')) || 0;
+    let transferredBytes = 0;
+    if (response.status === 204) {
+        if (onDownloadProgress) {
+            onDownloadProgress({ percent: 1, totalBytes, transferredBytes }, new Uint8Array());
+        }
+        return new Response(null, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+        });
+    }
+    return new Response(new ReadableStream({
+        async start(controller) {
+            const reader = response.body.getReader();
+            if (onDownloadProgress) {
+                onDownloadProgress({ percent: 0, transferredBytes: 0, totalBytes }, new Uint8Array());
+            }
+            async function read() {
+                const { done, value } = await reader.read();
+                if (done) {
+                    controller.close();
+                    return;
+                }
+                if (onDownloadProgress) {
+                    transferredBytes += value.byteLength;
+                    const percent = totalBytes === 0 ? 0 : transferredBytes / totalBytes;
+                    onDownloadProgress({ percent, transferredBytes, totalBytes }, value);
+                }
+                controller.enqueue(value);
+                await read();
+            }
+            await read();
+        },
+    }), {
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers,
+    });
+};
+const streamRequest = (request, onUploadProgress) => {
+    const totalBytes = getBodySize(request.body);
+    let transferredBytes = 0;
+    return new Request(request, {
+        // @ts-expect-error - Types are outdated.
+        duplex: 'half',
+        body: new ReadableStream({
+            async start(controller) {
+                const reader = request.body instanceof ReadableStream ? request.body.getReader() : new Response('').body.getReader();
+                async function read() {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        // Ensure 100% progress is reported when the upload is complete
+                        if (onUploadProgress) {
+                            onUploadProgress({ percent: 1, transferredBytes, totalBytes: Math.max(totalBytes, transferredBytes) }, new Uint8Array());
+                        }
+                        controller.close();
+                        return;
+                    }
+                    transferredBytes += value.byteLength;
+                    let percent = totalBytes === 0 ? 0 : transferredBytes / totalBytes;
+                    if (totalBytes < transferredBytes || percent === 1) {
+                        percent = 0.99;
+                    }
+                    if (onUploadProgress) {
+                        onUploadProgress({ percent: Number(percent.toFixed(2)), transferredBytes, totalBytes }, value);
+                    }
+                    controller.enqueue(value);
+                    await read();
+                }
+                await read();
+            },
+        }),
+    });
+};
+//# sourceMappingURL=body.js.map
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/utils/is.js
 // eslint-disable-next-line @typescript-eslint/ban-types
 const isObject = (value) => value !== null && typeof value === 'object';
 //# sourceMappingURL=is.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/merge.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/utils/merge.js
 
 const validateAndMerge = (...sources) => {
     for (const source of sources) {
@@ -36917,83 +37118,7 @@ const deepMerge = (...sources) => {
     return returnValue;
 };
 //# sourceMappingURL=merge.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/core/constants.js
-const supportsRequestStreams = (() => {
-    let duplexAccessed = false;
-    let hasContentType = false;
-    const supportsReadableStream = typeof globalThis.ReadableStream === 'function';
-    const supportsRequest = typeof globalThis.Request === 'function';
-    if (supportsReadableStream && supportsRequest) {
-        try {
-            hasContentType = new globalThis.Request('https://empty.invalid', {
-                body: new globalThis.ReadableStream(),
-                method: 'POST',
-                // @ts-expect-error - Types are outdated.
-                get duplex() {
-                    duplexAccessed = true;
-                    return 'half';
-                },
-            }).headers.has('Content-Type');
-        }
-        catch (error) {
-            // QQBrowser on iOS throws "unsupported BodyInit type" error (see issue #581)
-            if (error instanceof Error && error.message === 'unsupported BodyInit type') {
-                return false;
-            }
-            throw error;
-        }
-    }
-    return duplexAccessed && !hasContentType;
-})();
-const supportsAbortController = typeof globalThis.AbortController === 'function';
-const supportsResponseStreams = typeof globalThis.ReadableStream === 'function';
-const supportsFormData = typeof globalThis.FormData === 'function';
-const requestMethods = ['get', 'post', 'put', 'patch', 'head', 'delete'];
-const validate = () => undefined;
-validate();
-const responseTypes = {
-    json: 'application/json',
-    text: 'text/*',
-    formData: 'multipart/form-data',
-    arrayBuffer: '*/*',
-    blob: '*/*',
-};
-// The maximum value of a 32bit int (see issue #117)
-const maxSafeTimeout = 2_147_483_647;
-const stop = Symbol('stop');
-const kyOptionKeys = {
-    json: true,
-    parseJson: true,
-    stringifyJson: true,
-    searchParams: true,
-    prefixUrl: true,
-    retry: true,
-    timeout: true,
-    hooks: true,
-    throwHttpErrors: true,
-    onDownloadProgress: true,
-    fetch: true,
-};
-const requestOptionsRegistry = {
-    method: true,
-    headers: true,
-    body: true,
-    mode: true,
-    credentials: true,
-    cache: true,
-    redirect: true,
-    referrer: true,
-    referrerPolicy: true,
-    integrity: true,
-    keepalive: true,
-    signal: true,
-    window: true,
-    dispatcher: true,
-    duplex: true,
-    priority: true,
-};
-//# sourceMappingURL=constants.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/normalize.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/utils/normalize.js
 
 const normalizeRequestMethod = (input) => requestMethods.includes(input) ? input.toUpperCase() : input;
 const retryMethods = ['get', 'put', 'head', 'delete', 'options', 'trace'];
@@ -37027,7 +37152,7 @@ const normalizeRetryOptions = (retry = {}) => {
     };
 };
 //# sourceMappingURL=normalize.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/timeout.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/utils/timeout.js
 
 // `Promise.race()` workaround (#91)
 async function timeout(request, init, abortController, options) {
@@ -37048,7 +37173,7 @@ async function timeout(request, init, abortController, options) {
     });
 }
 //# sourceMappingURL=timeout.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/delay.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/utils/delay.js
 // https://github.com/sindresorhus/delay/tree/ab98ae8dfcb38e1593286c94d934e70d14a4e111
 async function delay(ms, { signal }) {
     return new Promise((resolve, reject) => {
@@ -37067,7 +37192,7 @@ async function delay(ms, { signal }) {
     });
 }
 //# sourceMappingURL=delay.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/utils/options.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/utils/options.js
 
 const findUnknownOptions = (request, options) => {
     const unknownOptions = {};
@@ -37079,7 +37204,8 @@ const findUnknownOptions = (request, options) => {
     return unknownOptions;
 };
 //# sourceMappingURL=options.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/core/Ky.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/core/Ky.js
+
 
 
 
@@ -37097,6 +37223,8 @@ class Ky {
             }
             // Delay the fetch so that body method shortcuts can set the Accept header
             await Promise.resolve();
+            // Before using ky.request, _fetch clones it and saves the clone for future retries to use.
+            // If retry is not needed, close the cloned request's ReadableStream for memory safety.
             let response = await ky._fetch();
             for (const hook of ky._options.hooks.afterResponse) {
                 // eslint-disable-next-line no-await-in-loop
@@ -37114,8 +37242,11 @@ class Ky {
                 }
                 throw error;
             }
+            // Now that we know a retry is not needed, close the ReadableStream of the cloned request.
+            if (!ky.request.bodyUsed) {
+                await ky.request.body?.cancel();
+            }
             // If `onDownloadProgress` is passed, it uses the stream API internally
-            /* istanbul ignore next */
             if (ky._options.onDownloadProgress) {
                 if (typeof ky._options.onDownloadProgress !== 'function') {
                     throw new TypeError('The `onDownloadProgress` option must be a function');
@@ -37123,7 +37254,7 @@ class Ky {
                 if (!supportsResponseStreams) {
                     throw new Error('Streams are not supported in your environment. `ReadableStream` is missing.');
                 }
-                return ky._stream(response.clone(), ky._options.onDownloadProgress);
+                return streamResponse(response.clone(), ky._options.onDownloadProgress);
             }
             return response;
         };
@@ -37190,15 +37321,9 @@ class Ky {
             this._input = this._options.prefixUrl + this._input;
         }
         if (supportsAbortController) {
-            this.abortController = new globalThis.AbortController();
             const originalSignal = this._options.signal ?? this._input.signal;
-            if (originalSignal?.aborted) {
-                this.abortController.abort(originalSignal?.reason);
-            }
-            originalSignal?.addEventListener('abort', () => {
-                this.abortController.abort(originalSignal.reason);
-            });
-            this._options.signal = this.abortController.signal;
+            this.abortController = new globalThis.AbortController();
+            this._options.signal = originalSignal ? AbortSignal.any([originalSignal, this.abortController.signal]) : this.abortController.signal;
         }
         if (supportsRequestStreams) {
             // @ts-expect-error - Types are outdated.
@@ -37224,6 +37349,19 @@ class Ky {
             }
             // The spread of `this.request` is required as otherwise it misses the `duplex` option for some reason and throws.
             this.request = new globalThis.Request(new globalThis.Request(url, { ...this.request }), this._options);
+        }
+        // If `onUploadProgress` is passed, it uses the stream API internally
+        if (this._options.onUploadProgress) {
+            if (typeof this._options.onUploadProgress !== 'function') {
+                throw new TypeError('The `onUploadProgress` option must be a function');
+            }
+            if (!supportsRequestStreams) {
+                throw new Error('Request streams are not supported in your environment. The `duplex` option for `Request` is not available.');
+            }
+            const originalBody = this.request.body;
+            if (originalBody) {
+                this.request = streamRequest(this.request, this._options.onUploadProgress);
+            }
         }
     }
     _calculateRetryDelay(error) {
@@ -37311,51 +37449,9 @@ class Ky {
         }
         return timeout(mainRequest, nonRequestOptions, this.abortController, this._options);
     }
-    /* istanbul ignore next */
-    _stream(response, onDownloadProgress) {
-        const totalBytes = Number(response.headers.get('content-length')) || 0;
-        let transferredBytes = 0;
-        if (response.status === 204) {
-            if (onDownloadProgress) {
-                onDownloadProgress({ percent: 1, totalBytes, transferredBytes }, new Uint8Array());
-            }
-            return new globalThis.Response(null, {
-                status: response.status,
-                statusText: response.statusText,
-                headers: response.headers,
-            });
-        }
-        return new globalThis.Response(new globalThis.ReadableStream({
-            async start(controller) {
-                const reader = response.body.getReader();
-                if (onDownloadProgress) {
-                    onDownloadProgress({ percent: 0, transferredBytes: 0, totalBytes }, new Uint8Array());
-                }
-                async function read() {
-                    const { done, value } = await reader.read();
-                    if (done) {
-                        controller.close();
-                        return;
-                    }
-                    if (onDownloadProgress) {
-                        transferredBytes += value.byteLength;
-                        const percent = totalBytes === 0 ? 0 : transferredBytes / totalBytes;
-                        onDownloadProgress({ percent, transferredBytes, totalBytes }, value);
-                    }
-                    controller.enqueue(value);
-                    await read();
-                }
-                await read();
-            },
-        }), {
-            status: response.status,
-            statusText: response.statusText,
-            headers: response.headers,
-        });
-    }
 }
 //# sourceMappingURL=Ky.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.7.5/node_modules/ky/distribution/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.0/node_modules/ky/distribution/index.js
 /*! MIT License © Sindre Sorhus */
 
 
