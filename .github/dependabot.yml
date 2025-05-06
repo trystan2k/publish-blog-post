@@ -5,8 +5,6 @@ updates:
   schedule:
     interval: "weekly"
   versioning-strategy: "increase"
-  reviewers:
-    - "trystan2k"
   assignees:
     - "trystan2k"
   labels:
@@ -15,3 +13,16 @@ updates:
   commit-message:
     prefix: "chore"
     include: "scope"
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "weekly"
+  versioning-strategy: "increase"
+  assignees:
+    - "trystan2k"
+  labels:
+    - "dependabot"
+    - "dependencies"
+  commit-message:
+    prefix: "chore"
+    include: "scope"    
