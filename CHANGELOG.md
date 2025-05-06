@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.3.0](https://github.com/trystan2k/publish-blog-post/compare/v1.2.0...v1.3.0) (2025-05-06)
+
+
+### Features
+
+* update dist ([9527be9](https://github.com/trystan2k/publish-blog-post/commit/9527be9f43c02bb0294974c70ed51cd95347ae8c))
+
 ## [1.2.0](https://github.com/trystan2k/publish-blog-post/compare/v1.1.0...v1.2.0) (2025-02-18)
 
 
