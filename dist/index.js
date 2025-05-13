@@ -1840,7 +1840,7 @@ class ExecState extends events.EventEmitter {
 
 /***/ }),
 
-/***/ 3721:
+/***/ 9944:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 
@@ -1871,6 +1871,7 @@ class Context {
         this.action = process.env.GITHUB_ACTION;
         this.actor = process.env.GITHUB_ACTOR;
         this.job = process.env.GITHUB_JOB;
+        this.runAttempt = parseInt(process.env.GITHUB_RUN_ATTEMPT, 10);
         this.runNumber = parseInt(process.env.GITHUB_RUN_NUMBER, 10);
         this.runId = parseInt(process.env.GITHUB_RUN_ID, 10);
         this.apiUrl = (_a = process.env.GITHUB_API_URL) !== null && _a !== void 0 ? _a : `https://api.github.com`;
@@ -1901,7 +1902,7 @@ exports.Context = Context;
 
 /***/ }),
 
-/***/ 2819:
+/***/ 5380:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -1930,8 +1931,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokit = exports.context = void 0;
-const Context = __importStar(__nccwpck_require__(3721));
-const utils_1 = __nccwpck_require__(4655);
+const Context = __importStar(__nccwpck_require__(9944));
+const utils_1 = __nccwpck_require__(8689);
 exports.context = new Context.Context();
 /**
  * Returns a hydrated octokit ready to use for GitHub Actions
@@ -1948,7 +1949,7 @@ exports.getOctokit = getOctokit;
 
 /***/ }),
 
-/***/ 4523:
+/***/ 7276:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -2024,7 +2025,7 @@ exports.getApiBaseUrl = getApiBaseUrl;
 
 /***/ }),
 
-/***/ 4655:
+/***/ 8689:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -2053,8 +2054,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokitOptions = exports.GitHub = exports.defaults = exports.context = void 0;
-const Context = __importStar(__nccwpck_require__(3721));
-const Utils = __importStar(__nccwpck_require__(4523));
+const Context = __importStar(__nccwpck_require__(9944));
+const Utils = __importStar(__nccwpck_require__(7276));
 // octokit + plugins
 const core_1 = __nccwpck_require__(7590);
 const plugin_rest_endpoint_methods_1 = __nccwpck_require__(3656);
@@ -37663,8 +37664,8 @@ const createHostingAPI = (name, apiKey) => new HostingAPI(name, apiKey);
 var core = __nccwpck_require__(9999);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+exec@1.1.1/node_modules/@actions/exec/lib/exec.js
 var exec = __nccwpck_require__(8872);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@6.0.0/node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(2819);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@6.0.1/node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(5380);
 ;// CONCATENATED MODULE: ./src/git/index.ts
 
 
