@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.4.1](https://github.com/trystan2k/publish-blog-post/compare/v1.4.0...v1.4.1) (2025-07-22)
+
+## [1.4.0](https://github.com/trystan2k/publish-blog-post/compare/v1.3.1...v1.4.0) (2025-05-13)
+
+
+### Features
+
+* **dist:** update dist with new dependency version ([3116e3c](https://github.com/trystan2k/publish-blog-post/commit/3116e3c32763a4a08e45d722a35c188ced507764))
+
+## [1.3.1](https://github.com/trystan2k/publish-blog-post/compare/v1.3.0...v1.3.1) (2025-05-06)
+
+## [1.3.0](https://github.com/trystan2k/publish-blog-post/compare/v1.2.0...v1.3.0) (2025-05-06)
+
+
+### Features
+
+* update dist ([9527be9](https://github.com/trystan2k/publish-blog-post/commit/9527be9f43c02bb0294974c70ed51cd95347ae8c))
+
+## [1.2.0](https://github.com/trystan2k/publish-blog-post/compare/v1.1.0...v1.2.0) (2025-02-18)
+
+
+### Features
+
+* update generated code after dependency update ([bf16988](https://github.com/trystan2k/publish-blog-post/commit/bf169888e209565996f17e37967007cb951123e7))
+
+## [1.1.0](https://github.com/trystan2k/publish-blog-post/compare/v1.0.0...v1.1.0) (2025-02-05)
+
 ## 1.0.0 (2024-10-27)
 
 
