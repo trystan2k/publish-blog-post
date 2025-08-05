@@ -55,8 +55,8 @@ importers:
         specifier: ~3.2.4
         version: 3.2.4(vitest@3.2.4(@types/node@24.1.0)(jiti@2.4.2)(jsdom@25.0.1)(yaml@2.8.0))
       commit-and-tag-version:
-        specifier: ~12.5.1
-        version: 12.5.1
+        specifier: ~12.5.2
+        version: 12.5.2
       commitizen:
         specifier: ~4.3.1
         version: 4.3.1(@types/node@24.1.0)(typescript@5.8.3)
@@ -121,8 +121,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@asamuzakjp/css-color@3.1.7':
-    resolution: {integrity: sha512-Ok5fYhtwdyJQmU1PpEv6Si7Y+A4cYb8yNM9oiIJC9TzXPMuN9fvdonKJqcnz9TbFqV6bQ8z0giRq0iaOpGZV2g==}
+  '@asamuzakjp/css-color@3.2.0':
+    resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
 
   '@babel/code-frame@7.27.1':
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
@@ -233,28 +233,28 @@ packages:
     resolution: {integrity: sha512-JqWH1vsgdGcw2RR6VliXXdA0/59LttzlU8UlRT/iUUsEeWfYq8I+K0yhihEUTTHLRm1EXvpsCx3083EU15ecsA==}
     engines: {node: '>=18'}
 
-  '@csstools/css-calc@2.1.3':
-    resolution: {integrity: sha512-XBG3talrhid44BY1x3MHzUx/aTG8+x/Zi57M4aTKK9RFB4aLlF3TTSzfzn8nWVHWL3FgAXAxmupmDd6VWww+pw==}
+  '@csstools/css-calc@2.1.4':
+    resolution: {integrity: sha512-3N8oaj+0juUw/1H3YwmDDJXCgTB1gKU6Hc/bB502u9zR0q2vd786XJH9QfrKIEgFlZmhZiq6epXl4rHqhzsIgQ==}
     engines: {node: '>=18'}
     peerDependencies:
-      '@csstools/css-parser-algorithms': ^3.0.4
-      '@csstools/css-tokenizer': ^3.0.3
+      '@csstools/css-parser-algorithms': ^3.0.5
+      '@csstools/css-tokenizer': ^3.0.4
 
-  '@csstools/css-color-parser@3.0.9':
-    resolution: {integrity: sha512-wILs5Zk7BU86UArYBJTPy/FMPPKVKHMj1ycCEyf3VUptol0JNRLFU/BZsJ4aiIHJEbSLiizzRrw8Pc1uAEDrXw==}
+  '@csstools/css-color-parser@3.0.10':
+    resolution: {integrity: sha512-TiJ5Ajr6WRd1r8HSiwJvZBiJOqtH86aHpUjq5aEKWHiII2Qfjqd/HCWKPOW8EP4vcspXbHnXrwIDlu5savQipg==}
     engines: {node: '>=18'}
     peerDependencies:
-      '@csstools/css-parser-algorithms': ^3.0.4
-      '@csstools/css-tokenizer': ^3.0.3
+      '@csstools/css-parser-algorithms': ^3.0.5
+      '@csstools/css-tokenizer': ^3.0.4
 
-  '@csstools/css-parser-algorithms@3.0.4':
-    resolution: {integrity: sha512-Up7rBoV77rv29d3uKHUIVubz1BTcgyUK72IvCQAbfbMv584xHcGKCKbWh7i8hPrRJ7qU4Y8IO3IY9m+iTB7P3A==}
+  '@csstools/css-parser-algorithms@3.0.5':
+    resolution: {integrity: sha512-DaDeUkXZKjdGhgYaHNJTV9pV7Y9B3b644jCLs9Upc3VeNGg6LWARAT6O+Q+/COo+2gg/bM5rhpMAtf70WqfBdQ==}
     engines: {node: '>=18'}
     peerDependencies:
-      '@csstools/css-tokenizer': ^3.0.3
+      '@csstools/css-tokenizer': ^3.0.4
 
-  '@csstools/css-tokenizer@3.0.3':
-    resolution: {integrity: sha512-UJnjoFsmxfKUdNYdWgOB0mWUypuLvAfQPH1+pyvRJs6euowbFkFC6P13w1l8mJyi3vxYMxc9kld5jZEGRQs6bw==}
+  '@csstools/css-tokenizer@3.0.4':
+    resolution: {integrity: sha512-Vd/9EVDiu6PPJt9yAh6roZP6El1xHrdvIVGjyBsHR0RYwNHgL7FJPyIIW4fANJNG6FtyZfvlRPpFI4ZM/lubvw==}
     engines: {node: '>=18'}
 
   '@esbuild/aix-ppc64@0.25.4':
@@ -854,8 +854,8 @@ packages:
   add-stream@1.0.0:
     resolution: {integrity: sha512-qQLMr+8o0WC4FZGQTcJiKBVC59JylcPSrTtk6usvmIDFUOCKegapy1VHQwRbFMOFyb/inzUVqHs+eMYKDM1YeQ==}
 
-  agent-base@7.1.3:
-    resolution: {integrity: sha512-jRR5wdylq8CkOe6hei19GGZnxM6rBGwFl3Bg0YItGDimvjGtAvdZk4Pu6Cl4u4Igsws4a1fd1Vq3ezrhn4KmFw==}
+  agent-base@7.1.4:
+    resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
 
   ajv@6.12.6:
@@ -1096,8 +1096,8 @@ packages:
     resolution: {integrity: sha512-2uM9rYjPvyq39NwLRqaiLtWHyDC1FvryJDa2ATTVims5YAS4PupsEQsDvP14FqhFr0P49CYDugi59xaxJlTXRA==}
     engines: {node: '>=20'}
 
-  commit-and-tag-version@12.5.1:
-    resolution: {integrity: sha512-EA+0zGai6pPfpD1/hwuRDGMLZe00V4b1PtIFtZw5ra/PCan3kxOMVTnj/VuMTNgmH6lwbptObxVDYYzWXzndsg==}
+  commit-and-tag-version@12.5.2:
+    resolution: {integrity: sha512-ipRkoRPbDk6/d8Swc3frFCrE9p0z3X6RExUeJfbmnqypR7xPXWgwJnyQz4GGkP1grrIgTDdwXBfcBb/1DOwJ6A==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -1229,8 +1229,8 @@ packages:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
 
-  cssstyle@4.3.1:
-    resolution: {integrity: sha512-ZgW+Jgdd7i52AaLYCriF8Mxqft0gD/R9i9wi6RWBhs1pqdPEzPjym7rvRKi397WmQFf3SlyUsszhw+VVCbx79Q==}
+  cssstyle@4.6.0:
+    resolution: {integrity: sha512-2z+rWdzbbSZv6/rhtvzvqeZQHrBaqgogqt85sqFNbabZOuFbCVFb8kPeEtZjiKkbrm395irpNKiYeFeLiQnFPg==}
     engines: {node: '>=18'}
 
   cz-conventional-changelog@3.3.0:
@@ -1289,8 +1289,8 @@ packages:
     resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
     engines: {node: '>=0.10.0'}
 
-  decimal.js@10.5.0:
-    resolution: {integrity: sha512-8vDa8Qxvr/+d94hSh5P3IJwI5t8/c0KsMp+g8bNw9cY2icONa5aPfvKeieW1WlG0WQYwwhJ7mjui2xtiePQSXw==}
+  decimal.js@10.6.0:
+    resolution: {integrity: sha512-YpgQiITW3JXGntzdUmyUR1V812Hn8T1YVXhCu+wO3OpS4eU9l4YdD3qjyiKdV6mvV29zapkMeD390UVEf2lkUg==}
 
   dedent@0.7.0:
     resolution: {integrity: sha512-Q6fKUPqnAHAyhiUgFU7BUzLiv0kd8saH9al7tnu5Q/okj6dnupxyTgFIBjVzJATdfIAm9NAsvXNzjaKa+bxVyA==}
@@ -1364,8 +1364,8 @@ packages:
   emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
 
-  entities@6.0.0:
-    resolution: {integrity: sha512-aKstq2TDOndCn4diEyp9Uq/Flu2i1GlLkc6XIDQSDMuaFE3OPW5OphLCyQ5SpSJZTb4reN+kTcYru5yIfXoRPw==}
+  entities@6.0.1:
+    resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
     engines: {node: '>=0.12'}
 
   env-paths@2.2.1:
@@ -2376,8 +2376,8 @@ packages:
     resolution: {integrity: sha512-p2W1sgqij3zMMyRC067Dg16bfzVH+w7hyegmpIvZ4JNjqtGOVAIvLmjBx3yP7YTe9vKJgkoNOPjwQGogDoMXFA==}
     engines: {node: '>=10'}
 
-  nwsapi@2.2.20:
-    resolution: {integrity: sha512-/ieB+mDe4MrrKMT8z+mQL8klXydZWGR5Dowt4RAGKbJ3kIGEx3X4ljUo+6V73IXtUPWgfOlU5B9MlGxFO5T+cA==}
+  nwsapi@2.2.21:
+    resolution: {integrity: sha512-o6nIY3qwiSXl7/LuOU0Dmuctd34Yay0yeuZRLFmDPrrdHpXKFndPj3hM+YEPVHYC5fx2otBx4Ilc/gyYSAUaIA==}
 
   object-inspect@1.13.4:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
@@ -2724,11 +2724,6 @@ packages:
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
-    hasBin: true
-
-  semver@7.7.1:
-    resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
-    engines: {node: '>=10'}
     hasBin: true
 
   semver@7.7.2:
@@ -3258,8 +3253,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  ws@8.18.2:
-    resolution: {integrity: sha512-DMricUmwGZUVr++AEAe2uiVM7UoO9MAVZMDu05UQOaUII0lp+zOzLLU4Xqh/JvTqklB1T4uELaaPBKyjE1r4fQ==}
+  ws@8.18.3:
+    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -3287,11 +3282,6 @@ packages:
 
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
-
-  yaml@2.7.1:
-    resolution: {integrity: sha512-10ULxpnOCQXxJvBgxsn9ptjq6uviG/htZKk9veJGhlqn3w/DxQ631zFF+nlQXLwmImeS5amR2dl2U8sg6U9jsQ==}
-    engines: {node: '>= 14'}
-    hasBin: true
 
   yaml@2.8.0:
     resolution: {integrity: sha512-4lLa/EcQCB0cJkyts+FpIRx5G/llPxfP6VQU5KByHEhLxY3IJCH0f0Hy1MHI8sClTvsIb8qwRJ6R/ZdlDJ/leQ==}
@@ -3359,12 +3349,12 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@asamuzakjp/css-color@3.1.7':
+  '@asamuzakjp/css-color@3.2.0':
     dependencies:
-      '@csstools/css-calc': 2.1.3(@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3))(@csstools/css-tokenizer@3.0.3)
-      '@csstools/css-color-parser': 3.0.9(@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3))(@csstools/css-tokenizer@3.0.3)
-      '@csstools/css-parser-algorithms': 3.0.4(@csstools/css-tokenizer@3.0.3)
-      '@csstools/css-tokenizer': 3.0.3
+      '@csstools/css-calc': 2.1.4(@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4))(@csstools/css-tokenizer@3.0.4)
+      '@csstools/css-color-parser': 3.0.10(@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4))(@csstools/css-tokenizer@3.0.4)
+      '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
+      '@csstools/css-tokenizer': 3.0.4
       lru-cache: 10.4.3
 
   '@babel/code-frame@7.27.1':
@@ -3439,7 +3429,7 @@ snapshots:
   '@commitlint/format@19.8.1':
     dependencies:
       '@commitlint/types': 19.8.1
-      chalk: 5.4.1
+      chalk: 5.5.0
 
   '@commitlint/is-ignored@19.8.1':
     dependencies:
@@ -3459,7 +3449,7 @@ snapshots:
       '@commitlint/execute-rule': 19.8.1
       '@commitlint/resolve-extends': 19.8.1
       '@commitlint/types': 19.8.1
-      chalk: 5.4.1
+      chalk: 5.5.0
       cosmiconfig: 9.0.0(typescript@5.8.3)
       cosmiconfig-typescript-loader: 6.1.0(@types/node@24.1.0)(cosmiconfig@9.0.0(typescript@5.8.3))(typescript@5.8.3)
       lodash.isplainobject: 4.0.6
@@ -3510,7 +3500,7 @@ snapshots:
   '@commitlint/types@19.8.1':
     dependencies:
       '@types/conventional-commits-parser': 5.0.1
-      chalk: 5.4.1
+      chalk: 5.5.0
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -3518,23 +3508,23 @@ snapshots:
 
   '@csstools/color-helpers@5.0.2': {}
 
-  '@csstools/css-calc@2.1.3(@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3))(@csstools/css-tokenizer@3.0.3)':
+  '@csstools/css-calc@2.1.4(@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4))(@csstools/css-tokenizer@3.0.4)':
     dependencies:
-      '@csstools/css-parser-algorithms': 3.0.4(@csstools/css-tokenizer@3.0.3)
-      '@csstools/css-tokenizer': 3.0.3
+      '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
+      '@csstools/css-tokenizer': 3.0.4
 
-  '@csstools/css-color-parser@3.0.9(@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3))(@csstools/css-tokenizer@3.0.3)':
+  '@csstools/css-color-parser@3.0.10(@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4))(@csstools/css-tokenizer@3.0.4)':
     dependencies:
       '@csstools/color-helpers': 5.0.2
-      '@csstools/css-calc': 2.1.3(@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3))(@csstools/css-tokenizer@3.0.3)
-      '@csstools/css-parser-algorithms': 3.0.4(@csstools/css-tokenizer@3.0.3)
-      '@csstools/css-tokenizer': 3.0.3
+      '@csstools/css-calc': 2.1.4(@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4))(@csstools/css-tokenizer@3.0.4)
+      '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
+      '@csstools/css-tokenizer': 3.0.4
 
-  '@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3)':
+  '@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4)':
     dependencies:
-      '@csstools/css-tokenizer': 3.0.3
+      '@csstools/css-tokenizer': 3.0.4
 
-  '@csstools/css-tokenizer@3.0.3': {}
+  '@csstools/css-tokenizer@3.0.4': {}
 
   '@esbuild/aix-ppc64@0.25.4':
     optional: true
@@ -4057,7 +4047,7 @@ snapshots:
 
   add-stream@1.0.0: {}
 
-  agent-base@7.1.3: {}
+  agent-base@7.1.4: {}
 
   ajv@6.12.6:
     dependencies:
@@ -4316,7 +4306,7 @@ snapshots:
 
   commander@14.0.0: {}
 
-  commit-and-tag-version@12.5.1:
+  commit-and-tag-version@12.5.2:
     dependencies:
       chalk: 2.4.2
       conventional-changelog: 4.0.0
@@ -4330,9 +4320,9 @@ snapshots:
       find-up: 5.0.0
       git-semver-tags: 5.0.1
       jsdom: 25.0.1
-      semver: 7.7.1
+      semver: 7.7.2
       w3c-xmlserializer: 5.0.0
-      yaml: 2.7.1
+      yaml: 2.8.0
       yargs: 17.7.2
     transitivePeerDependencies:
       - bufferutil
@@ -4505,9 +4495,9 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  cssstyle@4.3.1:
+  cssstyle@4.6.0:
     dependencies:
-      '@asamuzakjp/css-color': 3.1.7
+      '@asamuzakjp/css-color': 3.2.0
       rrweb-cssom: 0.8.0
 
   cz-conventional-changelog@3.3.0(@types/node@24.1.0)(typescript@5.8.3):
@@ -4568,7 +4558,7 @@ snapshots:
 
   decamelize@1.2.0: {}
 
-  decimal.js@10.5.0: {}
+  decimal.js@10.6.0: {}
 
   dedent@0.7.0: {}
 
@@ -4631,7 +4621,7 @@ snapshots:
 
   emoji-regex@9.2.2: {}
 
-  entities@6.0.0: {}
+  entities@6.0.1: {}
 
   env-paths@2.2.1: {}
 
@@ -5102,7 +5092,7 @@ snapshots:
   git-semver-tags@5.0.1:
     dependencies:
       meow: 8.1.2
-      semver: 7.7.1
+      semver: 7.7.2
 
   gitconfiglocal@1.0.0:
     dependencies:
@@ -5227,14 +5217,14 @@ snapshots:
 
   http-proxy-agent@7.0.2:
     dependencies:
-      agent-base: 7.1.3
+      agent-base: 7.1.4
       debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.6:
     dependencies:
-      agent-base: 7.1.3
+      agent-base: 7.1.4
       debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
@@ -5492,15 +5482,15 @@ snapshots:
 
   jsdom@25.0.1:
     dependencies:
-      cssstyle: 4.3.1
+      cssstyle: 4.6.0
       data-urls: 5.0.0
-      decimal.js: 10.5.0
+      decimal.js: 10.6.0
       form-data: 4.0.4
       html-encoding-sniffer: 4.0.0
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       is-potential-custom-element-name: 1.0.1
-      nwsapi: 2.2.20
+      nwsapi: 2.2.21
       parse5: 7.3.0
       rrweb-cssom: 0.7.1
       saxes: 6.0.0
@@ -5511,7 +5501,7 @@ snapshots:
       whatwg-encoding: 3.1.1
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.2.0
-      ws: 8.18.2
+      ws: 8.18.3
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -5770,7 +5760,7 @@ snapshots:
       semver: 7.7.2
       validate-npm-package-license: 3.0.4
 
-  nwsapi@2.2.20: {}
+  nwsapi@2.2.21: {}
 
   object-inspect@1.13.4: {}
 
@@ -5908,7 +5898,7 @@ snapshots:
 
   parse5@7.3.0:
     dependencies:
-      entities: 6.0.0
+      entities: 6.0.1
 
   path-exists@3.0.0: {}
 
@@ -6146,8 +6136,6 @@ snapshots:
   semver@5.7.2: {}
 
   semver@6.3.1: {}
-
-  semver@7.7.1: {}
 
   semver@7.7.2: {}
 
@@ -6717,7 +6705,7 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  ws@8.18.2: {}
+  ws@8.18.3: {}
 
   xml-name-validator@5.0.0: {}
 
@@ -6728,8 +6716,6 @@ snapshots:
   y18n@5.0.8: {}
 
   yallist@4.0.0: {}
-
-  yaml@2.7.1: {}
 
   yaml@2.8.0: {}
 
