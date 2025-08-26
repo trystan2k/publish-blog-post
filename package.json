@@ -53,7 +53,7 @@
     "@actions/github": "~6.0.1",
     "find": "~0.3.0",
     "gray-matter": "~4.0.3",
-    "ky": "~1.8.2"
+    "ky": "~1.9.0"
   },
   "devDependencies": {
     "@commitlint/cli": "~19.8.1",
