@@ -12767,7 +12767,7 @@ const Agent = __nccwpck_require__(8603)
 const util = __nccwpck_require__(4606)
 const { InvalidArgumentError } = errors
 const api = __nccwpck_require__(8725)
-const buildConnector = __nccwpck_require__(110)
+const buildConnector = __nccwpck_require__(7729)
 const MockClient = __nccwpck_require__(4163)
 const MockAgent = __nccwpck_require__(5343)
 const MockPool = __nccwpck_require__(3722)
@@ -15724,7 +15724,7 @@ const {
   ResponseExceededMaxSizeError,
   ClientDestroyedError
 } = __nccwpck_require__(1581)
-const buildConnector = __nccwpck_require__(110)
+const buildConnector = __nccwpck_require__(7729)
 const {
   kUrl,
   kReset,
@@ -18852,7 +18852,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 110:
+/***/ 7729:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
@@ -32481,7 +32481,7 @@ const {
 } = __nccwpck_require__(1581)
 const util = __nccwpck_require__(4606)
 const { kUrl, kInterceptors } = __nccwpck_require__(5773)
-const buildConnector = __nccwpck_require__(110)
+const buildConnector = __nccwpck_require__(7729)
 
 const kOptions = Symbol('options')
 const kConnections = Symbol('connections')
@@ -32589,7 +32589,7 @@ const Agent = __nccwpck_require__(8603)
 const Pool = __nccwpck_require__(6086)
 const DispatcherBase = __nccwpck_require__(9787)
 const { InvalidArgumentError, RequestAbortedError } = __nccwpck_require__(1581)
-const buildConnector = __nccwpck_require__(110)
+const buildConnector = __nccwpck_require__(7729)
 
 const kAgent = Symbol('proxy agent')
 const kClient = Symbol('proxy client')
@@ -36818,7 +36818,7 @@ __nccwpck_require__.d(__webpack_exports__, {
   A: () => (/* binding */ src)
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/errors/HTTPError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/errors/HTTPError.js
 class HTTPError extends Error {
     response;
     request;
@@ -36836,7 +36836,7 @@ class HTTPError extends Error {
     }
 }
 //# sourceMappingURL=HTTPError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/errors/TimeoutError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/errors/TimeoutError.js
 class TimeoutError extends Error {
     request;
     constructor(request) {
@@ -36846,7 +36846,7 @@ class TimeoutError extends Error {
     }
 }
 //# sourceMappingURL=TimeoutError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/core/constants.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/core/constants.js
 const supportsRequestStreams = (() => {
     let duplexAccessed = false;
     let hasContentType = false;
@@ -36887,6 +36887,9 @@ const responseTypes = {
     formData: 'multipart/form-data',
     arrayBuffer: '*/*',
     blob: '*/*',
+    // Supported in modern Fetch implementations (for example, browsers and recent Node.js/undici).
+    // We still feature-check at runtime before exposing the shortcut.
+    bytes: '*/*',
 };
 // The maximum value of a 32bit int (see issue #117)
 const maxSafeTimeout = 2_147_483_647;
@@ -36926,7 +36929,7 @@ const requestOptionsRegistry = {
     priority: true,
 };
 //# sourceMappingURL=constants.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/utils/body.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/utils/body.js
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 const getBodySize = (body) => {
@@ -37048,11 +37051,11 @@ const streamRequest = (request, onUploadProgress) => {
     });
 };
 //# sourceMappingURL=body.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/utils/is.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/utils/is.js
 // eslint-disable-next-line @typescript-eslint/ban-types
 const isObject = (value) => value !== null && typeof value === 'object';
 //# sourceMappingURL=is.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/utils/merge.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/utils/merge.js
 
 const validateAndMerge = (...sources) => {
     for (const source of sources) {
@@ -37119,7 +37122,7 @@ const deepMerge = (...sources) => {
     return returnValue;
 };
 //# sourceMappingURL=merge.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/utils/normalize.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/utils/normalize.js
 
 const normalizeRequestMethod = (input) => requestMethods.includes(input) ? input.toUpperCase() : input;
 const retryMethods = ['get', 'put', 'head', 'delete', 'options', 'trace'];
@@ -37153,7 +37156,7 @@ const normalizeRetryOptions = (retry = {}) => {
     };
 };
 //# sourceMappingURL=normalize.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/utils/timeout.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/utils/timeout.js
 
 // `Promise.race()` workaround (#91)
 async function timeout(request, init, abortController, options) {
@@ -37174,7 +37177,7 @@ async function timeout(request, init, abortController, options) {
     });
 }
 //# sourceMappingURL=timeout.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/utils/delay.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/utils/delay.js
 // https://github.com/sindresorhus/delay/tree/ab98ae8dfcb38e1593286c94d934e70d14a4e111
 async function delay(ms, { signal }) {
     return new Promise((resolve, reject) => {
@@ -37193,7 +37196,7 @@ async function delay(ms, { signal }) {
     });
 }
 //# sourceMappingURL=delay.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/utils/options.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/utils/options.js
 
 const findUnknownOptions = (request, options) => {
     const unknownOptions = {};
@@ -37204,8 +37207,28 @@ const findUnknownOptions = (request, options) => {
     }
     return unknownOptions;
 };
+const hasSearchParameters = (search) => {
+    if (search === undefined) {
+        return false;
+    }
+    // The `typeof array` still gives "object", so we need different checking for array.
+    if (Array.isArray(search)) {
+        return search.length > 0;
+    }
+    if (search instanceof URLSearchParams) {
+        return search.size > 0;
+    }
+    // Record
+    if (typeof search === 'object') {
+        return Object.keys(search).length > 0;
+    }
+    if (typeof search === 'string') {
+        return search.trim().length > 0;
+    }
+    return Boolean(search);
+};
 //# sourceMappingURL=options.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/core/Ky.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/core/Ky.js
 
 
 
@@ -37264,6 +37287,11 @@ class Ky {
             }
         });
         for (const [type, mimeType] of Object.entries(responseTypes)) {
+            // Only expose `.bytes()` when the environment implements it.
+            if (type === 'bytes'
+                && typeof globalThis.Response?.prototype?.bytes !== 'function') {
+                continue;
+            }
             result[type] = async () => {
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 ky.request.headers.set('accept', ky.request.headers.get('accept') || mimeType);
@@ -37337,7 +37365,7 @@ class Ky {
             this._options.headers.set('content-type', this._options.headers.get('content-type') ?? 'application/json');
         }
         this.request = new globalThis.Request(this._input, this._options);
-        if (this._options.searchParams) {
+        if (hasSearchParameters(this._options.searchParams)) {
             // eslint-disable-next-line unicorn/prevent-abbreviations
             const textSearchParams = typeof this._options.searchParams === 'string'
                 ? this._options.searchParams.replace(/^\?/, '')
@@ -37454,7 +37482,7 @@ class Ky {
     }
 }
 //# sourceMappingURL=Ky.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.8.2/node_modules/ky/distribution/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@1.9.0/node_modules/ky/distribution/index.js
 /*! MIT License © Sindre Sorhus */
 
 
