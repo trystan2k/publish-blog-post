@@ -1,0 +1,78 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "documenter": {
+      "mode": "primary",
+      "model": "github-copilot/gpt-5-mini",
+      "prompt": "You are a document writer. Focus on clear and concise documentation.",
+      "tools": {
+        "bash": true,
+        "basic-memory": false,
+        "chrome-devtools": false,
+        "context7": false,
+        "edit": true,
+        "github": false,
+        "playwright": false,
+        "repomix": false,
+        "serena": false,
+        "shadcn-ui": false,
+        "task-master-ai": false,
+        "write": true
+      }
+    }
+  },
+  "instructions": [
+    "AGENTS.md",
+    "docs/DEV_WORKFLOW.md"
+  ],
+  "mcp": {
+    "basic-memory": {
+      "command": [
+        "uvx",
+        "basic-memory",
+        "mcp",
+        "--project",
+        "publish-blog-post"
+      ],
+      "enabled": false,
+      "type": "local"
+    },
+    "serena": {
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--enable-web-dashboard",
+        "false",
+        "--project",
+        "publish-blog-post"
+      ],
+      "enabled": true,
+      "type": "local"
+    },
+    "task-master-ai": {
+      "command": [
+        "npx",
+        "-y",
+        "--package=task-master-ai",
+        "task-master-ai"
+      ],
+      "enabled": false,
+      "type": "local"
+    }
+  },
+  "provider": {
+    "github-copilot": {
+      "models": {
+        "claude-sonnet-4.5": {
+          "limit": {
+            "context": 256000,
+            "output": 32000
+          }
+        }
+      }
+    }
+  }
+}
