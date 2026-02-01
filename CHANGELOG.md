@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.5.0](https://github.com/trystan2k/publish-blog-post/compare/v1.4.1...v1.5.0) (2026-02-01)
+
+
+### Features
+
+* add opencode configuration and project documentation ([19ba351](https://github.com/trystan2k/publish-blog-post/commit/19ba3511c6e2a7d24f786c0d6a937f71693b9c6d))
+* **hosting:** add empty context to axios mock calls and update dist ([d4b3651](https://github.com/trystan2k/publish-blog-post/commit/d4b365101bd1a3cd8d265f0a4a89fac3dc0a3e0b))
+
 ## [1.4.1](https://github.com/trystan2k/publish-blog-post/compare/v1.4.0...v1.4.1) (2025-07-22)
 
 ## [1.4.0](https://github.com/trystan2k/publish-blog-post/compare/v1.3.1...v1.4.0) (2025-05-13)
