@@ -1186,7 +1186,7 @@ function aliase(name) {
 
 
 
-const yaml = __nccwpck_require__(5774);
+const yaml = __nccwpck_require__(2521);
 
 /**
  * Default engines
@@ -1507,13 +1507,13 @@ module.exports = function isExtendable(val) {
 
 /***/ }),
 
-/***/ 5774:
+/***/ 2521:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
 
-var yaml = __nccwpck_require__(7359);
+var yaml = __nccwpck_require__(5576);
 
 
 module.exports = yaml;
@@ -1521,14 +1521,14 @@ module.exports = yaml;
 
 /***/ }),
 
-/***/ 7359:
+/***/ 5576:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
 
-var loader = __nccwpck_require__(93);
-var dumper = __nccwpck_require__(7723);
+var loader = __nccwpck_require__(5948);
+var dumper = __nccwpck_require__(2886);
 
 
 function deprecated(name) {
@@ -1538,25 +1538,25 @@ function deprecated(name) {
 }
 
 
-module.exports.Type = __nccwpck_require__(2438);
-module.exports.Schema = __nccwpck_require__(5241);
-module.exports.FAILSAFE_SCHEMA = __nccwpck_require__(9197);
-module.exports.JSON_SCHEMA = __nccwpck_require__(1610);
-module.exports.CORE_SCHEMA = __nccwpck_require__(3031);
-module.exports.DEFAULT_SAFE_SCHEMA = __nccwpck_require__(5635);
-module.exports.DEFAULT_FULL_SCHEMA = __nccwpck_require__(3551);
+module.exports.Type = __nccwpck_require__(6739);
+module.exports.Schema = __nccwpck_require__(8908);
+module.exports.FAILSAFE_SCHEMA = __nccwpck_require__(5082);
+module.exports.JSON_SCHEMA = __nccwpck_require__(8469);
+module.exports.CORE_SCHEMA = __nccwpck_require__(8844);
+module.exports.DEFAULT_SAFE_SCHEMA = __nccwpck_require__(7088);
+module.exports.DEFAULT_FULL_SCHEMA = __nccwpck_require__(3940);
 module.exports.load                = loader.load;
 module.exports.loadAll             = loader.loadAll;
 module.exports.safeLoad            = loader.safeLoad;
 module.exports.safeLoadAll         = loader.safeLoadAll;
 module.exports.dump                = dumper.dump;
 module.exports.safeDump            = dumper.safeDump;
-module.exports.YAMLException = __nccwpck_require__(4825);
+module.exports.YAMLException = __nccwpck_require__(3542);
 
 // Deprecated schema names from JS-YAML 2.0.x
-module.exports.MINIMAL_SCHEMA = __nccwpck_require__(9197);
-module.exports.SAFE_SCHEMA = __nccwpck_require__(5635);
-module.exports.DEFAULT_SCHEMA = __nccwpck_require__(3551);
+module.exports.MINIMAL_SCHEMA = __nccwpck_require__(5082);
+module.exports.SAFE_SCHEMA = __nccwpck_require__(7088);
+module.exports.DEFAULT_SCHEMA = __nccwpck_require__(3940);
 
 // Deprecated functions from JS-YAML 1.x.x
 module.exports.scan           = deprecated('scan');
@@ -1567,7 +1567,7 @@ module.exports.addConstructor = deprecated('addConstructor');
 
 /***/ }),
 
-/***/ 9563:
+/***/ 6142:
 /***/ ((module) => {
 
 
@@ -1633,17 +1633,17 @@ module.exports.extend         = extend;
 
 /***/ }),
 
-/***/ 7723:
+/***/ 2886:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
 /*eslint-disable no-use-before-define*/
 
-var common              = __nccwpck_require__(9563);
-var YAMLException       = __nccwpck_require__(4825);
-var DEFAULT_FULL_SCHEMA = __nccwpck_require__(3551);
-var DEFAULT_SAFE_SCHEMA = __nccwpck_require__(5635);
+var common              = __nccwpck_require__(6142);
+var YAMLException       = __nccwpck_require__(3542);
+var DEFAULT_FULL_SCHEMA = __nccwpck_require__(3940);
+var DEFAULT_SAFE_SCHEMA = __nccwpck_require__(7088);
 
 var _toString       = Object.prototype.toString;
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -2490,7 +2490,7 @@ module.exports.safeDump = safeDump;
 
 /***/ }),
 
-/***/ 4825:
+/***/ 3542:
 /***/ ((module) => {
 
 // YAML error class. http://stackoverflow.com/questions/8458984
@@ -2540,18 +2540,18 @@ module.exports = YAMLException;
 
 /***/ }),
 
-/***/ 93:
+/***/ 5948:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
 /*eslint-disable max-len,no-use-before-define*/
 
-var common              = __nccwpck_require__(9563);
-var YAMLException       = __nccwpck_require__(4825);
-var Mark                = __nccwpck_require__(2447);
-var DEFAULT_SAFE_SCHEMA = __nccwpck_require__(5635);
-var DEFAULT_FULL_SCHEMA = __nccwpck_require__(3551);
+var common              = __nccwpck_require__(6142);
+var YAMLException       = __nccwpck_require__(3542);
+var Mark                = __nccwpck_require__(8742);
+var DEFAULT_SAFE_SCHEMA = __nccwpck_require__(7088);
+var DEFAULT_FULL_SCHEMA = __nccwpck_require__(3940);
 
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -2664,6 +2664,22 @@ function charFromCodepoint(c) {
     ((c - 0x010000) >> 10) + 0xD800,
     ((c - 0x010000) & 0x03FF) + 0xDC00
   );
+}
+
+// set a property of a literal object, while protecting against prototype pollution,
+// see https://github.com/nodeca/js-yaml/issues/164 for more details
+function setProperty(object, key, value) {
+  // used for this specific key only because Object.defineProperty is slow
+  if (key === '__proto__') {
+    Object.defineProperty(object, key, {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: value
+    });
+  } else {
+    object[key] = value;
+  }
 }
 
 var simpleEscapeCheck = new Array(256); // integer, for fast access
@@ -2823,7 +2839,7 @@ function mergeMappings(state, destination, source, overridableKeys) {
     key = sourceKeys[index];
 
     if (!_hasOwnProperty.call(destination, key)) {
-      destination[key] = source[key];
+      setProperty(destination, key, source[key]);
       overridableKeys[key] = true;
     }
   }
@@ -2879,7 +2895,7 @@ function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valu
       state.position = startPos || state.position;
       throwError(state, 'duplicated mapping key');
     }
-    _result[keyNode] = valueNode;
+    setProperty(_result, keyNode, valueNode);
     delete overridableKeys[keyNode];
   }
 
@@ -4191,13 +4207,13 @@ module.exports.safeLoad    = safeLoad;
 
 /***/ }),
 
-/***/ 2447:
+/***/ 8742:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
 
-var common = __nccwpck_require__(9563);
+var common = __nccwpck_require__(6142);
 
 
 function Mark(name, buffer, position, line, column) {
@@ -4274,16 +4290,16 @@ module.exports = Mark;
 
 /***/ }),
 
-/***/ 5241:
+/***/ 8908:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
 /*eslint-disable max-len*/
 
-var common        = __nccwpck_require__(9563);
-var YAMLException = __nccwpck_require__(4825);
-var Type          = __nccwpck_require__(2438);
+var common        = __nccwpck_require__(6142);
+var YAMLException = __nccwpck_require__(3542);
+var Type          = __nccwpck_require__(6739);
 
 
 function compileList(schema, name, result) {
@@ -4389,7 +4405,7 @@ module.exports = Schema;
 
 /***/ }),
 
-/***/ 3031:
+/***/ 8844:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 // Standard YAML's Core schema.
@@ -4402,19 +4418,19 @@ module.exports = Schema;
 
 
 
-var Schema = __nccwpck_require__(5241);
+var Schema = __nccwpck_require__(8908);
 
 
 module.exports = new Schema({
   include: [
-    __nccwpck_require__(1610)
+    __nccwpck_require__(8469)
   ]
 });
 
 
 /***/ }),
 
-/***/ 3551:
+/***/ 3940:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 // JS-YAML's default schema for `load` function.
@@ -4429,24 +4445,24 @@ module.exports = new Schema({
 
 
 
-var Schema = __nccwpck_require__(5241);
+var Schema = __nccwpck_require__(8908);
 
 
 module.exports = Schema.DEFAULT = new Schema({
   include: [
-    __nccwpck_require__(5635)
+    __nccwpck_require__(7088)
   ],
   explicit: [
-    __nccwpck_require__(541),
-    __nccwpck_require__(2464),
-    __nccwpck_require__(6893)
+    __nccwpck_require__(8522),
+    __nccwpck_require__(6137),
+    __nccwpck_require__(920)
   ]
 });
 
 
 /***/ }),
 
-/***/ 5635:
+/***/ 7088:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 // JS-YAML's default schema for `safeLoad` function.
@@ -4459,29 +4475,29 @@ module.exports = Schema.DEFAULT = new Schema({
 
 
 
-var Schema = __nccwpck_require__(5241);
+var Schema = __nccwpck_require__(8908);
 
 
 module.exports = new Schema({
   include: [
-    __nccwpck_require__(3031)
+    __nccwpck_require__(8844)
   ],
   implicit: [
-    __nccwpck_require__(8577),
-    __nccwpck_require__(7249)
+    __nccwpck_require__(3364),
+    __nccwpck_require__(176)
   ],
   explicit: [
-    __nccwpck_require__(3228),
-    __nccwpck_require__(4152),
-    __nccwpck_require__(5020),
-    __nccwpck_require__(4745)
+    __nccwpck_require__(3375),
+    __nccwpck_require__(9939),
+    __nccwpck_require__(2509),
+    __nccwpck_require__(4836)
   ]
 });
 
 
 /***/ }),
 
-/***/ 9197:
+/***/ 5082:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 // Standard YAML's Failsafe schema.
@@ -4491,21 +4507,21 @@ module.exports = new Schema({
 
 
 
-var Schema = __nccwpck_require__(5241);
+var Schema = __nccwpck_require__(8908);
 
 
 module.exports = new Schema({
   explicit: [
-    __nccwpck_require__(2314),
-    __nccwpck_require__(8534),
-    __nccwpck_require__(2215)
+    __nccwpck_require__(2843),
+    __nccwpck_require__(9071),
+    __nccwpck_require__(8102)
   ]
 });
 
 
 /***/ }),
 
-/***/ 1610:
+/***/ 8469:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 // Standard YAML's JSON schema.
@@ -4519,30 +4535,30 @@ module.exports = new Schema({
 
 
 
-var Schema = __nccwpck_require__(5241);
+var Schema = __nccwpck_require__(8908);
 
 
 module.exports = new Schema({
   include: [
-    __nccwpck_require__(9197)
+    __nccwpck_require__(5082)
   ],
   implicit: [
-    __nccwpck_require__(7164),
-    __nccwpck_require__(8253),
-    __nccwpck_require__(5380),
-    __nccwpck_require__(1587)
+    __nccwpck_require__(6935),
+    __nccwpck_require__(3066),
+    __nccwpck_require__(5477),
+    __nccwpck_require__(4162)
   ]
 });
 
 
 /***/ }),
 
-/***/ 2438:
+/***/ 6739:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var YAMLException = __nccwpck_require__(4825);
+var YAMLException = __nccwpck_require__(3542);
 
 var TYPE_CONSTRUCTOR_OPTIONS = [
   'kind',
@@ -4605,7 +4621,7 @@ module.exports = Type;
 
 /***/ }),
 
-/***/ 3228:
+/***/ 3375:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
@@ -4620,7 +4636,7 @@ try {
   NodeBuffer = _require('buffer').Buffer;
 } catch (__) {}
 
-var Type       = __nccwpck_require__(2438);
+var Type       = __nccwpck_require__(6739);
 
 
 // [ 64, 65, 66 ] -> [ padding, CR, LF ]
@@ -4750,12 +4766,12 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
 
 /***/ }),
 
-/***/ 8253:
+/***/ 3066:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 function resolveYamlBoolean(data) {
   if (data === null) return false;
@@ -4792,13 +4808,13 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
 
 /***/ }),
 
-/***/ 1587:
+/***/ 4162:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var common = __nccwpck_require__(9563);
-var Type   = __nccwpck_require__(2438);
+var common = __nccwpck_require__(6142);
+var Type   = __nccwpck_require__(6739);
 
 var YAML_FLOAT_PATTERN = new RegExp(
   // 2.5e4, 2.5 and integers
@@ -4915,13 +4931,13 @@ module.exports = new Type('tag:yaml.org,2002:float', {
 
 /***/ }),
 
-/***/ 5380:
+/***/ 5477:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var common = __nccwpck_require__(9563);
-var Type   = __nccwpck_require__(2438);
+var common = __nccwpck_require__(6142);
+var Type   = __nccwpck_require__(6739);
 
 function isHexCode(c) {
   return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) ||
@@ -5095,7 +5111,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
 
 /***/ }),
 
-/***/ 6893:
+/***/ 920:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
@@ -5119,7 +5135,7 @@ try {
   if (typeof window !== 'undefined') esprima = window.esprima;
 }
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 function resolveJavascriptFunction(data) {
   if (data === null) return false;
@@ -5195,12 +5211,12 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
 
 /***/ }),
 
-/***/ 2464:
+/***/ 6137:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 function resolveJavascriptRegExp(data) {
   if (data === null) return false;
@@ -5262,12 +5278,12 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
 
 /***/ }),
 
-/***/ 541:
+/***/ 8522:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 function resolveJavascriptUndefined() {
   return true;
@@ -5297,12 +5313,12 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
 
 /***/ }),
 
-/***/ 2215:
+/***/ 8102:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 module.exports = new Type('tag:yaml.org,2002:map', {
   kind: 'mapping',
@@ -5312,12 +5328,12 @@ module.exports = new Type('tag:yaml.org,2002:map', {
 
 /***/ }),
 
-/***/ 7249:
+/***/ 176:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 function resolveYamlMerge(data) {
   return data === '<<' || data === null;
@@ -5331,12 +5347,12 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
 
 /***/ }),
 
-/***/ 7164:
+/***/ 6935:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 function resolveYamlNull(data) {
   if (data === null) return true;
@@ -5372,12 +5388,12 @@ module.exports = new Type('tag:yaml.org,2002:null', {
 
 /***/ }),
 
-/***/ 4152:
+/***/ 9939:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 var _toString       = Object.prototype.toString;
@@ -5423,12 +5439,12 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
 
 /***/ }),
 
-/***/ 5020:
+/***/ 2509:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 var _toString = Object.prototype.toString;
 
@@ -5483,12 +5499,12 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
 
 /***/ }),
 
-/***/ 8534:
+/***/ 9071:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 module.exports = new Type('tag:yaml.org,2002:seq', {
   kind: 'sequence',
@@ -5498,12 +5514,12 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
 
 /***/ }),
 
-/***/ 4745:
+/***/ 4836:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -5534,12 +5550,12 @@ module.exports = new Type('tag:yaml.org,2002:set', {
 
 /***/ }),
 
-/***/ 2314:
+/***/ 2843:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 module.exports = new Type('tag:yaml.org,2002:str', {
   kind: 'scalar',
@@ -5549,12 +5565,12 @@ module.exports = new Type('tag:yaml.org,2002:str', {
 
 /***/ }),
 
-/***/ 8577:
+/***/ 3364:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
 
-var Type = __nccwpck_require__(2438);
+var Type = __nccwpck_require__(6739);
 
 var YAML_DATE_REGEXP = new RegExp(
   '^([0-9][0-9][0-9][0-9])'          + // [1] year
@@ -23662,7 +23678,7 @@ const {
 } = __nccwpck_require__(8843)
 const { HeadersList } = __nccwpck_require__(6084)
 const { Request, cloneRequest } = __nccwpck_require__(4031)
-const zlib = __nccwpck_require__(8522)
+const zlib = __nccwpck_require__(6141)
 const {
   bytesMatch,
   makePolicyContainer,
@@ -27608,7 +27624,7 @@ module.exports = {
 
 
 const { Transform } = __nccwpck_require__(7075)
-const zlib = __nccwpck_require__(8522)
+const zlib = __nccwpck_require__(6141)
 const { redirectStatusSet, referrerPolicySet: referrerPolicyTokens, badPortsSet } = __nccwpck_require__(4767)
 const { getGlobalOrigin } = __nccwpck_require__(4035)
 const { collectASequenceOfCodePoints, collectAnHTTPQuotedString, removeChars, parseMIMEType } = __nccwpck_require__(4476)
@@ -31986,7 +32002,7 @@ module.exports = {
 
 
 
-const { createInflateRaw, Z_DEFAULT_WINDOWBITS } = __nccwpck_require__(8522)
+const { createInflateRaw, Z_DEFAULT_WINDOWBITS } = __nccwpck_require__(6141)
 const { isValidClientWindowBits } = __nccwpck_require__(8017)
 
 const tail = Buffer.from([0x00, 0x00, 0xff, 0xff])
@@ -33710,7 +33726,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:worker_
 
 /***/ }),
 
-/***/ 8522:
+/***/ 6141:
 /***/ ((module) => {
 
 module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:zlib");

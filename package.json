@@ -84,6 +84,10 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"
-    ]
+    ],
+    "overrides": {
+      "tmp@<=0.2.3": ">=0.2.4",
+      "lodash@>=4.0.0 <=4.17.22": ">=4.17.23"
+    }
   }
 }
