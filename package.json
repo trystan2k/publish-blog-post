@@ -62,7 +62,7 @@
     "@eslint/compat": "~2.0.2",
     "@eslint/js": "~9.39.2",
     "@types/find": "~0.2.4",
-    "@types/node": "~25.2.2",
+    "@types/node": "~25.2.3",
     "@vercel/ncc": "~0.38.4",
     "@vitest/coverage-v8": "~4.0.18",
     "commit-and-tag-version": "~12.6.1",
