@@ -51,7 +51,7 @@ describe('DevToSDK', () => {
       });
 
       expect(ky.create).toHaveBeenCalledWith({
-        prefixUrl: 'https://dev.to/api',
+        prefix: 'https://dev.to/api',
         headers: {
           'api-key': apiKey,
           Accept: 'application/vnd.forem.api-v1+json',
@@ -90,7 +90,7 @@ describe('DevToSDK', () => {
             new HTTPError(HTTPError.prototype.response, new Request('https://dev.to/api/create'), {
               method: 'POST',
               retry: {},
-              prefixUrl: 'https://dev.to/api',
+              prefix: 'https://dev.to/api',
               headers: {
                 'api-key': apiKey,
                 Accept: 'application/vnd.forem.api-v1+json',
@@ -168,7 +168,7 @@ describe('DevToSDK', () => {
       });
 
       expect(ky.create).toHaveBeenCalledWith({
-        prefixUrl: 'https://dev.to/api',
+        prefix: 'https://dev.to/api',
         headers: {
           'api-key': apiKey,
           Accept: 'application/vnd.forem.api-v1+json',
@@ -208,7 +208,7 @@ describe('DevToSDK', () => {
             new HTTPError(HTTPError.prototype.response, new Request('https://dev.to/api/create'), {
               method: 'POST',
               retry: {},
-              prefixUrl: 'https://dev.to/api',
+              prefix: 'https://dev.to/api',
               headers: {
                 'api-key': apiKey,
                 Accept: 'application/vnd.forem.api-v1+json',
