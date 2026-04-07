@@ -43,7 +43,7 @@ class DevToSDK implements HostingAPIModel {
     }
 
     this.client = ky.create({
-      prefixUrl: this.prefixUrl,
+      prefix: this.prefixUrl,
       headers: {
         'api-key': devToApiKey,
         ...this.defaultHeaders,
