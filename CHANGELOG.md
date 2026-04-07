@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.0.0](https://github.com/trystan2k/publish-blog-post/compare/v1.5.0...v2.0.0) (2026-04-07)
+
+
+### Features
+
+* **hosting:** update ky client configuration from prefixUrl to prefix ([c20f29d](https://github.com/trystan2k/publish-blog-post/commit/c20f29d84e4e913ca59712544713e26bceae183e))
+
 ## [1.5.0](https://github.com/trystan2k/publish-blog-post/compare/v1.4.1...v1.5.0) (2026-02-01)
 
 
