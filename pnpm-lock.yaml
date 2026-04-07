@@ -28,8 +28,8 @@ importers:
         specifier: ~4.0.3
         version: 4.0.3
       ky:
-        specifier: ~1.14.3
-        version: 1.14.3
+        specifier: ~2.0.0
+        version: 2.0.0
     devDependencies:
       '@commitlint/cli':
         specifier: ~20.5.0
@@ -2124,9 +2124,9 @@ packages:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
 
-  ky@1.14.3:
-    resolution: {integrity: sha512-9zy9lkjac+TR1c2tG+mkNSVlyOpInnWdSMiue4F+kq8TwJSgv6o8jhLRg8Ho6SnZ9wOYUq/yozts9qQCfk7bIw==}
-    engines: {node: '>=18'}
+  ky@2.0.0:
+    resolution: {integrity: sha512-KzI4Vz5AbZFAUFYGx28PCSfFWUo6/qj9Br/P6KRwDieE1xfdz0tIONepJcLw/1xLocN13GgvfJGasa+pfSkbHg==}
+    engines: {node: '>=22'}
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -5372,7 +5372,7 @@ snapshots:
 
   kind-of@6.0.3: {}
 
-  ky@1.14.3: {}
+  ky@2.0.0: {}
 
   levn@0.4.1:
     dependencies:
