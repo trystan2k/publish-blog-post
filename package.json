@@ -59,7 +59,7 @@
     "@commitlint/cli": "~20.5.0",
     "@commitlint/config-conventional": "~20.5.0",
     "@commitlint/cz-commitlint": "~20.5.1",
-    "@eslint/compat": "~2.0.4",
+    "@eslint/compat": "~2.0.5",
     "@eslint/js": "~10.0.1",
     "@types/find": "~0.2.4",
     "@types/node": "~25.5.2",
