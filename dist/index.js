@@ -34152,9 +34152,13 @@ __nccwpck_require__.d(__webpack_exports__, {
   A: () => (/* binding */ src)
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/errors/KyError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/errors/KyError.js
 /**
 Base class for all Ky-specific errors. `HTTPError`, `NetworkError`, `TimeoutError`, and `ForceRetryError` extend this class.
+
+You can use `instanceof KyError` to check if an error originated from Ky, or use the `isKyError()` type guard for cross-realm compatibility and TypeScript type narrowing.
+
+Note: `SchemaValidationError` is intentionally not considered a Ky error. `KyError` covers failures in Ky's HTTP lifecycle (bad status, timeout, retry), while schema validation errors originate from the user-provided schema, not from Ky itself.
 */
 class KyError extends Error {
     name = 'KyError';
@@ -34163,12 +34167,16 @@ class KyError extends Error {
     }
 }
 //# sourceMappingURL=KyError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/errors/HTTPError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/errors/HTTPError.js
 
 /**
 Error thrown when the response has a non-2xx status code and `throwHttpErrors` is enabled.
 
-The error has a `response` property with the `Response` object, a `request` property with the `Request` object, an `options` property with the normalized options, and a `data` property with the pre-parsed response body. The response body is automatically consumed when populating `data`, so `response.json()` and other body methods will not work. Use `data` instead.
+The error has a `response` property with the `Response` object, a `request` property with the `Request` object, an `options` property with the normalized options (either passed to `ky` when creating an instance with `ky.create()` or directly when performing the request), and a `data` property with the pre-parsed response body. For JSON responses (based on `Content-Type`), the body is parsed using the `parseJson` option if set, or `JSON.parse` by default. For other content types, it is set as plain text. If the body is empty or parsing fails, `data` will be `undefined`. To avoid hanging or excessive buffering, `error.data` population is bounded by the request timeout and a 10 MiB response body size limit. The `data` property is populated before `beforeError` hooks run, so hooks can access it.
+
+The response body is automatically consumed when populating `error.data`, so `error.response.json()` and other body methods will not work. Use `error.data` instead. The `error.response` object is still available for headers, status, etc.
+
+Be aware that some types of errors, such as network errors, inherently mean that a response was not received. In that case, the error will be an instance of `NetworkError` instead of `HTTPError` and will not contain a `response` property.
 */
 class HTTPError extends KyError {
     name = 'HTTPError';
@@ -34188,12 +34196,14 @@ class HTTPError extends KyError {
     }
 }
 //# sourceMappingURL=HTTPError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/errors/NetworkError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/errors/NetworkError.js
 
 /**
-Error thrown when a network error occurs during the request (e.g., DNS failure, connection refused, offline).
+Error thrown when a network error occurs during the request (e.g., DNS failure, connection refused, offline). It has a `request` property with the `Request` object. The original error is available via the standard `cause` property.
 
-The error has a `request` property with the `Request` object. The original error is available via the standard `cause` property.
+Network errors are automatically retried (for retriable methods).
+
+Note: Network errors are detected using runtime-specific heuristics. Unrecognized runtimes may produce errors that are not wrapped in `NetworkError`. Use the `shouldRetry` option to handle such cases.
 */
 class NetworkError extends KyError {
     name = 'NetworkError';
@@ -34204,7 +34214,7 @@ class NetworkError extends KyError {
     }
 }
 //# sourceMappingURL=NetworkError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/errors/NonError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/errors/NonError.js
 /**
 Wrapper for non-Error values that were thrown.
 
@@ -34232,7 +34242,7 @@ class NonError extends Error {
     }
 }
 //# sourceMappingURL=NonError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/errors/ForceRetryError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/errors/ForceRetryError.js
 
 
 /**
@@ -34258,9 +34268,9 @@ class ForceRetryError_ForceRetryError extends KyError {
     }
 }
 //# sourceMappingURL=ForceRetryError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/errors/SchemaValidationError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/errors/SchemaValidationError.js
 /**
-Thrown when a response body fails validation against a user-provided Standard Schema.
+The error thrown when [Standard Schema](https://github.com/standard-schema/standard-schema) validation fails in `.json(schema)`. It has an `issues` property with the validation issues from the schema.
 
 This error intentionally does not extend `KyError` because it does not represent a failure in Ky's HTTP lifecycle. The request succeeded; the user's schema rejected the data. As such, it is not matched by `isKyError()`.
 
@@ -34290,12 +34300,10 @@ class SchemaValidationError extends Error {
     }
 }
 //# sourceMappingURL=SchemaValidationError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/errors/TimeoutError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/errors/TimeoutError.js
 
 /**
-Error thrown when the request times out.
-
-The error has a `request` property with the `Request` object.
+Error thrown when the request times out. It has a `request` property with the `Request` object.
 */
 class TimeoutError extends KyError {
     name = 'TimeoutError';
@@ -34306,7 +34314,7 @@ class TimeoutError extends KyError {
     }
 }
 //# sourceMappingURL=TimeoutError.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/core/constants.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/core/constants.js
 const supportsRequestStreams = (() => {
     let duplexAccessed = false;
     let hasContentType = false;
@@ -34385,7 +34393,7 @@ const api = ky.extend({
             async ({request, response}) => {
                 // Retry based on response body content
                 if (response.status === 200) {
-                    const data = await response.clone().json();
+                    const data = await response.json();
 
                     // Simple retry with default delay
                     if (data.error?.code === 'TEMPORARY_ERROR') {
@@ -34469,12 +34477,6 @@ const kyOptionKeys = {
     fetch: true,
     context: true,
 };
-// Vendor-specific fetch options that should always be passed to fetch()
-// even if they appear on the Request object due to vendor patching.
-// See: https://github.com/sindresorhus/ky/issues/541
-const vendorSpecificOptions = {
-    next: true, // Next.js cache revalidation (revalidate, tags)
-};
 // Standard RequestInit options that should NOT be passed separately to fetch()
 // because they're already applied to the Request object.
 // Note: `dispatcher` and `priority` are NOT included here - they're fetch-only
@@ -34497,7 +34499,7 @@ const requestOptionsRegistry = {
     duplex: true,
 };
 //# sourceMappingURL=constants.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/utils/body.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/utils/body.js
 
 const encoder = new TextEncoder();
 // eslint-disable-next-line @typescript-eslint/no-restricted-types
@@ -34587,11 +34589,11 @@ const streamRequest = (request, onUploadProgress, originalBody) => {
     });
 };
 //# sourceMappingURL=body.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/utils/is.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/utils/is.js
 // eslint-disable-next-line @typescript-eslint/no-restricted-types
 const isObject = (value) => value !== null && typeof value === 'object';
 //# sourceMappingURL=is.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/utils/merge.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/utils/merge.js
 
 
 const replaceSymbol = Symbol('replaceOption');
@@ -34605,7 +34607,7 @@ const getReplaceState = (value) => isObject(value) && value[replaceSymbol] === t
         value,
     };
 /**
-Wraps a value so that `ky.extend()` will replace the parent value instead of merging with it.
+Wraps a value so that `ky.extend()` will replace the parent value instead of merging with it. Works with hooks, headers, search parameters, context, and any other deep-merged option.
 
 By default, `.extend()` deep-merges options with the parent instance: hooks get appended, headers get merged, and search parameters get accumulated. Use `replaceOption` when you want to fully replace a merged property instead.
 
@@ -34659,7 +34661,13 @@ const isPlainObject = (value) => {
 };
 const cloneShallow = (value) => {
     if (value instanceof URLSearchParams) {
-        return new URLSearchParams(value);
+        const copy = new URLSearchParams(value);
+        const deleted = value[deletedParametersSymbol];
+        if (deleted) {
+            // Preserve internal deletion markers so init-hook cloning does not resurrect params removed during option merging.
+            copy[deletedParametersSymbol] = new Set(deleted);
+        }
+        return copy;
     }
     if (value instanceof globalThis.Headers) {
         return new globalThis.Headers(value);
@@ -34845,7 +34853,7 @@ const deepMerge = (...sources) => {
     return returnValue;
 };
 //# sourceMappingURL=merge.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/utils/normalize.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/utils/normalize.js
 
 const normalizeRequestMethod = (input) => requestMethods.includes(input) ? input.toUpperCase() : input;
 const retryMethods = ['get', 'put', 'head', 'delete', 'options', 'trace'];
@@ -34872,18 +34880,20 @@ const normalizeRetryOptions = (retry = {}) => {
     if (retry.methods && !Array.isArray(retry.methods)) {
         throw new Error('retry.methods must be an array');
     }
-    retry.methods &&= retry.methods.map(method => method.toLowerCase());
     if (retry.statusCodes && !Array.isArray(retry.statusCodes)) {
         throw new Error('retry.statusCodes must be an array');
     }
-    const normalizedRetry = Object.fromEntries(Object.entries(retry).filter(([, value]) => value !== undefined));
+    const normalizedRetry = Object.fromEntries(Object.entries({
+        ...retry,
+        methods: retry.methods?.map(method => method.toLowerCase()),
+    }).filter(([, value]) => value !== undefined));
     return {
         ...defaultRetryOptions,
         ...normalizedRetry,
     };
 };
 //# sourceMappingURL=normalize.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/utils/timeout.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/utils/timeout.js
 
 // `Promise.race()` workaround (#91)
 async function timeout(request, init, abortController, options) {
@@ -34904,7 +34914,7 @@ async function timeout(request, init, abortController, options) {
     });
 }
 //# sourceMappingURL=timeout.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/utils/delay.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/utils/delay.js
 // https://github.com/sindresorhus/delay/tree/ab98ae8dfcb38e1593286c94d934e70d14a4e111
 async function delay(ms, { signal }) {
     return new Promise((resolve, reject) => {
@@ -34923,23 +34933,22 @@ async function delay(ms, { signal }) {
     });
 }
 //# sourceMappingURL=delay.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/utils/options.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/utils/options.js
 
 
-const findUnknownOptions = (request, options) => {
+const findUnknownOptions = (options) => {
     const unknownOptions = {};
     for (const key in options) {
         // Skip inherited properties
         if (!Object.hasOwn(options, key)) {
             continue;
         }
-        // An option is passed to fetch() if:
-        // 1. It's not a standard RequestInit option (not in requestOptionsRegistry)
-        // 2. It's not a ky-specific option (not in kyOptionKeys)
-        // 3. Either:
-        //    a. It's not on the Request object, OR
-        //    b. It's a vendor-specific option that should always be passed (in vendorSpecificOptions)
-        if (!(key in requestOptionsRegistry) && !(key in kyOptionKeys) && (!(key in request) || key in vendorSpecificOptions)) {
+        // Forward every non-standard, non-Ky option to fetch().
+        // We intentionally do not check whether the key also exists on `Request`, because some runtimes
+        // patch `Request.prototype` with fetch-only extensions. For example, Next.js adds `next`, and the
+        // old `key in request` heuristic dropped it unless Ky kept a special-case allowlist.
+        // Passing all non-standard keys makes that allowlist unnecessary and preserves future fetch extensions too.
+        if (!(key in requestOptionsRegistry) && !(key in kyOptionKeys)) {
             unknownOptions[key] = options[key];
         }
     }
@@ -34966,7 +34975,7 @@ const hasSearchParameters = (search) => {
     return Boolean(search);
 };
 //# sourceMappingURL=options.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/utils/is-network-error.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/utils/is-network-error.js
 // Inlined from https://github.com/sindresorhus/is-network-error v1.3.1
 const objectToString = Object.prototype.toString;
 const isError = (value) => objectToString.call(value) === '[object Error]';
@@ -35007,7 +35016,7 @@ function isRawNetworkError(error) {
     return errorMessages.has(message);
 }
 //# sourceMappingURL=is-network-error.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/utils/type-guards.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/utils/type-guards.js
 
 
 
@@ -35131,7 +35140,7 @@ function isForceRetryError(error) {
     return isErrorType(error, ForceRetryError);
 }
 //# sourceMappingURL=type-guards.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/core/Ky.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/core/Ky.js
 
 
 
@@ -35162,16 +35171,43 @@ const createTextDecoder = (contentType) => {
     return new TextDecoder();
 };
 const invalidSchemaMessage = 'The `schema` argument must follow the Standard Schema specification';
+const cloneRetryOptions = (retry) => {
+    if (typeof retry !== 'object') {
+        return retry;
+    }
+    // Clone nested arrays too so init hooks can mutate retry config without leaking state across requests.
+    return {
+        ...retry,
+        ...(retry.methods && { methods: [...retry.methods] }),
+        ...(retry.statusCodes && { statusCodes: [...retry.statusCodes] }),
+        ...(retry.afterStatusCodes && { afterStatusCodes: [...retry.afterStatusCodes] }),
+    };
+};
+const Ky_objectToString = Object.prototype.toString;
+const isRequestInstance = (value) => value instanceof globalThis.Request || Ky_objectToString.call(value) === '[object Request]';
+// Accepted custom responses are treated as full Responses throughout Ky.
+// If a custom fetch returns one, it must behave like a Response for cloning,
+// body consumption, `json()` decoration, and any enabled stream features.
+const isResponseInstance = (value) => value instanceof globalThis.Response || Ky_objectToString.call(value) === '[object Response]';
+const cloneSearchParametersForInitHook = (searchParameters) => {
+    if (Array.isArray(searchParameters)) {
+        return searchParameters.map(parameter => [...parameter]);
+    }
+    return cloneShallow(searchParameters);
+};
 // Shallow-clone mutable option properties so init hook mutations don't leak across requests.
 function cloneInitHookOptions(options) {
-    return {
+    const clonedOptions = {
         ...options,
         json: cloneShallow(options.json),
-        retry: cloneShallow(options.retry),
         context: cloneShallow(options.context),
         headers: cloneShallow(options.headers),
-        searchParams: cloneShallow(options.searchParams),
+        searchParams: cloneSearchParametersForInitHook(options.searchParams),
     };
+    if (options.retry !== undefined) {
+        clonedOptions.retry = cloneRetryOptions(options.retry);
+    }
+    return clonedOptions;
 }
 const validateJsonWithSchema = async (jsonValue, schema) => {
     if ((typeof schema !== 'object'
@@ -35212,43 +35248,49 @@ class Ky {
             let response = beforeRequestResponse ?? await ky.#retry(async () => ky.#fetch());
             let responseFromHook = beforeRequestResponse !== undefined
                 || ky.#consumeReturnedResponseFromBeforeRetryHook();
-            if (!(response instanceof globalThis.Response)) {
-                return response;
-            }
             for (;;) {
-                try {
-                    // eslint-disable-next-line no-await-in-loop
-                    response = await ky.#runAfterResponseHooks(response);
+                // `undefined` means a hook stopped the flow without providing a response.
+                // Non-native Responses still continue through Ky if they pass `isResponseInstance()`.
+                if (response === undefined) {
+                    return response;
                 }
-                catch (error) {
-                    if (!(error instanceof ForceRetryError_ForceRetryError)) {
-                        throw error;
+                if (isResponseInstance(response)) {
+                    try {
+                        // eslint-disable-next-line no-await-in-loop
+                        response = await ky.#runAfterResponseHooks(response);
                     }
-                    // eslint-disable-next-line no-await-in-loop
-                    const retriedResponse = await ky.#retryFromError(error, async () => ky.#fetch());
-                    if (!(retriedResponse instanceof globalThis.Response)) {
-                        return retriedResponse;
+                    catch (error) {
+                        if (!(error instanceof ForceRetryError_ForceRetryError)) {
+                            throw error;
+                        }
+                        // eslint-disable-next-line no-await-in-loop
+                        const retriedResponse = await ky.#retryFromError(error, async () => ky.#fetch());
+                        if (retriedResponse === undefined) {
+                            return retriedResponse;
+                        }
+                        response = retriedResponse;
+                        responseFromHook = ky.#consumeReturnedResponseFromBeforeRetryHook();
+                        continue;
                     }
-                    response = retriedResponse;
-                    responseFromHook = ky.#consumeReturnedResponseFromBeforeRetryHook();
-                    continue;
                 }
+                const currentResponse = response;
                 // Opaque responses (`response.type === 'opaque'`) from `no-cors` requests always have `status: 0` and `ok: false`, but this is not a failure - the actual status is hidden by the browser.
-                if (!response.ok && response.type !== 'opaque' && (typeof ky.#options.throwHttpErrors === 'function'
-                    ? ky.#options.throwHttpErrors(response.status)
+                if (!currentResponse.ok && currentResponse.type !== 'opaque' && (typeof ky.#options.throwHttpErrors === 'function'
+                    ? ky.#options.throwHttpErrors(currentResponse.status)
                     : ky.#options.throwHttpErrors)) {
                     // `request` must reflect the request that actually failed, but `options` stays as Ky's
                     // normalized options snapshot. Replacement `Request` instances do not preserve the
                     // original `BodyInit`, so trying to make `options` mirror arbitrary requests would be lossy.
-                    const error = new HTTPError(response, ky.#getResponseRequest(response), ky.#getNormalizedOptions());
+                    const httpError = new HTTPError(currentResponse, ky.#getResponseRequest(currentResponse), ky.#getNormalizedOptions());
+                    const errorToThrow = httpError;
                     // eslint-disable-next-line no-await-in-loop
-                    error.data = await ky.#getResponseData(response);
+                    httpError.data = await ky.#getResponseData(currentResponse);
                     if (responseFromHook) {
-                        throw error;
+                        throw errorToThrow;
                     }
                     // eslint-disable-next-line no-await-in-loop
-                    const retriedResponse = await ky.#retryFromError(error, async () => ky.#fetch());
-                    if (!(retriedResponse instanceof globalThis.Response)) {
+                    const retriedResponse = await ky.#retryFromError(httpError, async () => ky.#fetch());
+                    if (retriedResponse === undefined) {
                         return retriedResponse;
                     }
                     response = retriedResponse;
@@ -35256,6 +35298,9 @@ class Ky {
                     continue;
                 }
                 break;
+            }
+            if (!isResponseInstance(response)) {
+                return response;
             }
             ky.#decorateResponse(response);
             // If `onDownloadProgress` is passed, it uses the stream API internally
@@ -35426,6 +35471,13 @@ class Ky {
         this.request = new globalThis.Request(this.#input, this.#options);
         if (hasSearchParameters(this.#options.searchParams)) {
             const url = new URL(this.request.url);
+            const deleted = this.#options.searchParams?.[deletedParametersSymbol];
+            if (deleted) {
+                // Remove keys from the input URL first so later searchParams entries can intentionally re-add them.
+                for (const key of deleted) {
+                    url.searchParams.delete(key);
+                }
+            }
             if (typeof this.#options.searchParams === 'string') {
                 const stringSearchParameters = this.#options.searchParams.replace(/^\?/, '');
                 if (stringSearchParameters !== '') {
@@ -35448,18 +35500,14 @@ class Ky {
                     }
                 }
             }
-            const deleted = this.#options.searchParams?.[deletedParametersSymbol];
-            if (deleted) {
-                for (const key of deleted) {
-                    url.searchParams.delete(key);
-                }
-            }
             // Recreate request with the updated URL. We already have all options in this.#options, including duplex.
             this.request = new globalThis.Request(url, this.#options);
         }
         if (this.#options.onUploadProgress && typeof this.#options.onUploadProgress !== 'function') {
             throw new TypeError('The `onUploadProgress` option must be a function');
         }
+        // `totalTimeout` starts when the request pipeline is created, so it also includes
+        // Ky's internal scheduling and user hook time before the first fetch attempt.
         this.#startTime = typeof this.#options.totalTimeout === 'number' ? this.#getCurrentTime() : undefined;
     }
     #calculateDelay() {
@@ -35704,11 +35752,11 @@ class Ky {
                 options: this.#getNormalizedOptions(),
                 retryCount: 0,
             });
-            if (result instanceof Response) {
-                return result;
-            }
-            if (result instanceof globalThis.Request) {
+            if (isRequestInstance(result)) {
                 this.#assignRequest(result);
+            }
+            else if (isResponseInstance(result)) {
+                return result;
             }
         }
         return undefined;
@@ -35716,40 +35764,45 @@ class Ky {
     async #runAfterResponseHooks(response) {
         const responseRequest = this.#getResponseRequest(response);
         for (const hook of this.#options.hooks.afterResponse) {
-            // Clone the response before passing to hook so we can cancel it if needed
-            const clonedResponse = this.#setResponseRequest(response.clone(), responseRequest);
-            this.#decorateResponse(clonedResponse);
+            const hookResponse = this.#setResponseRequest(response.clone(), responseRequest);
+            this.#decorateResponse(hookResponse);
             let modifiedResponse;
             try {
                 // eslint-disable-next-line no-await-in-loop
                 modifiedResponse = await hook({
                     request: this.request,
                     options: this.#getNormalizedOptions(),
-                    response: clonedResponse,
+                    response: hookResponse,
                     retryCount: this.#retryCount,
                 });
             }
             catch (error) {
                 // Cancel both responses to prevent memory leaks when hook throws
-                this.#cancelResponseBody(clonedResponse);
+                if (hookResponse !== response) {
+                    this.#cancelResponseBody(hookResponse);
+                }
                 this.#cancelResponseBody(response);
                 throw error;
             }
             if (modifiedResponse instanceof RetryMarker) {
                 // Cancel both the cloned response passed to the hook and the current response to prevent resource leaks (especially important in Deno/Bun).
                 // Do not await cancellation since hooks can clone the response, leaving extra tee branches that keep cancel promises pending per the Streams spec.
-                this.#cancelResponseBody(clonedResponse);
+                if (hookResponse !== response) {
+                    this.#cancelResponseBody(hookResponse);
+                }
                 this.#cancelResponseBody(response);
                 throw new ForceRetryError_ForceRetryError(modifiedResponse.options);
             }
-            // Determine which response to use going forward
-            const nextResponse = this.#setResponseRequest(modifiedResponse instanceof globalThis.Response ? modifiedResponse : response, responseRequest);
+            const nextResponse = isResponseInstance(modifiedResponse)
+                ? this.#setResponseRequest(modifiedResponse, responseRequest)
+                : response;
             // Cancel any response bodies we won't use to prevent memory leaks.
             // Uses fire-and-forget since hooks may have cloned the response, creating tee branches that block cancellation.
-            if (clonedResponse !== nextResponse) {
-                this.#cancelResponseBody(clonedResponse);
+            // If the hook wrapped an existing body into a new Response, both Response objects can still point at the same stream.
+            if (hookResponse !== response && hookResponse !== nextResponse && hookResponse.body !== nextResponse.body) {
+                this.#cancelResponseBody(hookResponse);
             }
-            if (response !== nextResponse) {
+            if (response !== nextResponse && response.body !== nextResponse.body) {
                 this.#cancelResponseBody(response);
             }
             response = nextResponse;
@@ -35785,7 +35838,11 @@ class Ky {
         // Apply custom request from forced retry before beforeRetry hooks
         // Ensure the custom request has the correct managed signal for timeouts and user aborts
         if (error instanceof ForceRetryError_ForceRetryError && error.customRequest) {
-            this.#assignRequest(new globalThis.Request(error.customRequest, this.#options.signal ? { signal: this.#options.signal } : undefined));
+            const customRequest = new globalThis.Request(error.customRequest, this.#options.signal ? { signal: this.#options.signal } : undefined);
+            // Replacement Requests are authoritative by design. Do not rewrite headers here,
+            // even for cross-origin retries. Callers using `ky.retry({request})` explicitly
+            // opted into the exact Request they constructed.
+            this.#assignRequest(customRequest);
         }
         for (const hook of this.#options.hooks.beforeRetry) {
             let hookResult;
@@ -35805,12 +35862,13 @@ class Ky {
                 }
                 throw hookError;
             }
-            if (hookResult instanceof globalThis.Request) {
+            if (isRequestInstance(hookResult)) {
+                // Same contract as `ky.retry({request})`: a Request returned from `beforeRetry`
+                // is used as-is rather than being sanitized or otherwise rewritten by Ky.
                 this.#assignRequest(hookResult);
                 break;
             }
-            // If a Response is returned, use it and skip the retry
-            if (hookResult instanceof globalThis.Response) {
+            if (isResponseInstance(hookResult)) {
                 this.#returnedResponseFromBeforeRetryHook = true;
                 this.#retryCount++;
                 return hookResult;
@@ -35837,7 +35895,7 @@ class Ky {
             // Recreate request with new signal
             this.request = new globalThis.Request(this.request, { signal: this.#options.signal });
         }
-        const nonRequestOptions = findUnknownOptions(this.request, this.#options);
+        const nonRequestOptions = findUnknownOptions(this.#options);
         const retryRequest = this.#options.retry.limit > 0 ? this.request.clone() : undefined;
         const request = this.#wrapRequestWithUploadProgress(this.request, this.#options.body ?? undefined);
         // Cloning is done here to prepare in advance for retries.
@@ -35909,7 +35967,7 @@ class Ky {
     }
 }
 //# sourceMappingURL=Ky.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.0/node_modules/ky/distribution/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ky@2.0.2/node_modules/ky/distribution/index.js
 /*! MIT License © Sindre Sorhus */
 
 
