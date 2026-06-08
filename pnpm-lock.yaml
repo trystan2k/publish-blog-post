@@ -38,8 +38,8 @@ importers:
         specifier: ~21.0.2
         version: 21.0.2
       '@commitlint/cz-commitlint':
-        specifier: ~21.0.1
-        version: 21.0.1(@types/node@25.9.1)(commitizen@4.3.1(@types/node@25.9.1)(typescript@6.0.3))(inquirer@8.2.5)(typescript@6.0.3)
+        specifier: ~21.0.2
+        version: 21.0.2(@types/node@25.9.1)(commitizen@4.3.1(@types/node@25.9.1)(typescript@6.0.3))(inquirer@8.2.5)(typescript@6.0.3)
       '@eslint/compat':
         specifier: ~2.1.0
         version: 2.1.0(eslint@10.4.1(jiti@2.6.1))
@@ -162,8 +162,8 @@ packages:
     resolution: {integrity: sha512-Zd2UFdndeMMaW2O96HK0tdfT4gOImUvidMpAd/pws2zZ4m1nrAZ/9b/v2JYuE8fs86GpXv9F7LNaIuCIWhY+pA==}
     engines: {node: '>=22.12.0'}
 
-  '@commitlint/cz-commitlint@21.0.1':
-    resolution: {integrity: sha512-1yuPBOCpF/4sGZAl8Vjo2S1jRalDMunr7eu/S78iMOCawLSkm8FzBNZuv82T4aa2zmxJOo8QA/0JJ6FCn/fxCQ==}
+  '@commitlint/cz-commitlint@21.0.2':
+    resolution: {integrity: sha512-C0pHSJrVpwUEYkoik/1FjyWtKn1cKvKXF8KbO+Xvw5VF4his82MNXhKh4FZ5hJwHKf00mFdwHkA6xEunkxwu5A==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       commitizen: ^4.0.3
@@ -187,10 +187,6 @@ packages:
 
   '@commitlint/lint@21.0.2':
     resolution: {integrity: sha512-PnUmLYGeGLfW8oVatR9KpNxSHYAnJOEWlMZzfdeFOUq6WUrFx1fGQaWCWJqMoIll/xPM+GdfJV+tKHZVHhl0Fg==}
-    engines: {node: '>=22.12.0'}
-
-  '@commitlint/load@21.0.1':
-    resolution: {integrity: sha512-Btg1q1mKmiihN4W3x0EsPDrJMOQfMa9NIqlzlJyXAfxvsOGdGXOW5p3R3RcSxDCaY7JabY9flIl+Om1af3PSrw==}
     engines: {node: '>=22.12.0'}
 
   '@commitlint/load@21.0.2':
@@ -3026,10 +3022,10 @@ snapshots:
       '@commitlint/types': 21.0.1
       ajv: 8.20.0
 
-  '@commitlint/cz-commitlint@21.0.1(@types/node@25.9.1)(commitizen@4.3.1(@types/node@25.9.1)(typescript@6.0.3))(inquirer@8.2.5)(typescript@6.0.3)':
+  '@commitlint/cz-commitlint@21.0.2(@types/node@25.9.1)(commitizen@4.3.1(@types/node@25.9.1)(typescript@6.0.3))(inquirer@8.2.5)(typescript@6.0.3)':
     dependencies:
       '@commitlint/ensure': 21.0.1
-      '@commitlint/load': 21.0.1(@types/node@25.9.1)(typescript@6.0.3)
+      '@commitlint/load': 21.0.2(@types/node@25.9.1)(typescript@6.0.3)
       '@commitlint/types': 21.0.1
       commitizen: 4.3.1(@types/node@25.9.1)(typescript@6.0.3)
       inquirer: 8.2.5
@@ -3063,21 +3059,6 @@ snapshots:
       '@commitlint/parse': 21.0.2
       '@commitlint/rules': 21.0.2
       '@commitlint/types': 21.0.1
-
-  '@commitlint/load@21.0.1(@types/node@25.9.1)(typescript@6.0.3)':
-    dependencies:
-      '@commitlint/config-validator': 21.0.1
-      '@commitlint/execute-rule': 21.0.1
-      '@commitlint/resolve-extends': 21.0.1
-      '@commitlint/types': 21.0.1
-      cosmiconfig: 9.0.1(typescript@6.0.3)
-      cosmiconfig-typescript-loader: 6.3.0(@types/node@25.9.1)(cosmiconfig@9.0.1(typescript@6.0.3))(typescript@6.0.3)
-      es-toolkit: 1.46.1
-      is-plain-obj: 4.1.0
-      picocolors: 1.1.1
-    transitivePeerDependencies:
-      - '@types/node'
-      - typescript
 
   '@commitlint/load@21.0.2(@types/node@25.9.1)(typescript@6.0.3)':
     dependencies:
