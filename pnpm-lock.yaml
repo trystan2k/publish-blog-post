@@ -53,8 +53,8 @@ importers:
         specifier: ~26.1.1
         version: 26.1.1
       '@vercel/ncc':
-        specifier: ~0.44.0
-        version: 0.44.0
+        specifier: ~0.44.1
+        version: 0.44.1
       '@vitest/coverage-v8':
         specifier: ~4.1.2
         version: 4.1.2(vitest@4.1.2(@types/node@26.1.1)(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@26.1.1)(jiti@2.6.1)(yaml@2.9.0)))
@@ -614,8 +614,8 @@ packages:
     resolution: {integrity: sha512-8C71BQkGjiMmXtop7pHVJu1l2NNShFdkCyD6a2ezzs5vU/L3LRtb69EtcteFwz0mYMPzIgOw0n6OV4VBUWZd7A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@vercel/ncc@0.44.0':
-    resolution: {integrity: sha512-pHyI+bZokSgIscTKFSmpNk5vZzmOrb9RW0Vu4SRyqUvkJ0kgg3PzaZLLDVTFXhbUiCqg0/Eu8L4fKtgViA92kg==}
+  '@vercel/ncc@0.44.1':
+    resolution: {integrity: sha512-cUjIE5P2YY1n+Kt9rFIazMMpGoPn1Fic04rOmTkElMkiDP5oszGfERMpo2shVkFKDL7rVppdM2pqJKC59shQWQ==}
     hasBin: true
 
   '@vitest/coverage-v8@4.1.2':
@@ -3035,7 +3035,7 @@ snapshots:
       '@typescript-eslint/types': 8.65.0
       eslint-visitor-keys: 5.0.1
 
-  '@vercel/ncc@0.44.0': {}
+  '@vercel/ncc@0.44.1': {}
 
   '@vitest/coverage-v8@4.1.2(vitest@4.1.2(@types/node@26.1.1)(vite@8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@26.1.1)(jiti@2.6.1)(yaml@2.9.0)))':
     dependencies:
