@@ -65,7 +65,7 @@
     "@types/node": "~26.1.2",
     "@vercel/ncc": "~0.44.1",
     "@vitest/coverage-v8": "~4.1.2",
-    "commit-and-tag-version": "~13.1.0",
+    "commit-and-tag-version": "~13.1.2",
     "commitizen": "~4.3.2",
     "eslint": "~10.8.0",
     "eslint-config-prettier": "~10.1.8",
